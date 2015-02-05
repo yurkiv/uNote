@@ -12,6 +12,9 @@ import android.widget.TextView;
 import com.yurkiv.materialnotes.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -68,6 +71,36 @@ public class NotesAdapter extends BaseAdapter implements Filterable {
         }
         return noteFilter;
     }
+
+
+
+    public static Comparator<Note> titleComparator =new Comparator<Note>() {
+        @Override
+        public int compare(Note lhs, Note rhs) {
+            String lTitle=lhs.getTitle();
+            String rTitle=rhs.getTitle();
+            return lTitle.compareToIgnoreCase(rTitle);
+        }
+    };
+
+    public static Comparator<Note> newestFirstComparator=new Comparator<Note>() {
+        @Override
+        public int compare(Note lhs, Note rhs) {
+            Date lDate=lhs.getUpdatedAt();
+            Date rDate=rhs.getUpdatedAt();
+            return rDate.compareTo(lDate);
+        }
+    };
+
+    public static Comparator<Note> oldestFirstComparator=new Comparator<Note>() {
+        @Override
+        public int compare(Note lhs, Note rhs) {
+            Date lDate=lhs.getUpdatedAt();
+            Date rDate=rhs.getUpdatedAt();
+            return lDate.compareTo(rDate);
+        }
+    };
+
 
     private static class ViewHolder{
         private TextView textRow;

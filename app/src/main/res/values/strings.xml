@@ -23,5 +23,8 @@
     <string name="search_note">Search Note</string>
     <string name="sort_note">Sort Note</string>
     <string name="help">Help</string>
+    <string name="sort_by_title">Sort by Title</string>
+    <string name="newest_first">Sort by Updated (newest first)</string>
+    <string name="oldest_first">Sort by Updated (oldest first)</string>
 
 </resources>

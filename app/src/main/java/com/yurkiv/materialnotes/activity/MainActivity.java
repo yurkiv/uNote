@@ -1,14 +1,12 @@
 package com.yurkiv.materialnotes.activity;
 
 import android.app.SearchManager;
-import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,6 +22,8 @@ import com.yurkiv.materialnotes.data.Note;
 import com.yurkiv.materialnotes.data.NotesAdapter;
 import com.yurkiv.materialnotes.util.RequestResultCode;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -168,14 +168,24 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
                 Intent intent=new Intent(MainActivity.this, EditNoteActivity.class);
                 startActivityForResult(intent, RequestResultCode.REQUEST_CODE_ADD_NOTE);
                 return true;
-            case R.id.sort_note:
-
+            case R.id.sort_by_title:
+                sortList(item, NotesAdapter.titleComparator);
                 return true;
-            case R.id.settings:
-
+            case R.id.newest_first:
+                sortList(item, NotesAdapter.newestFirstComparator);
+                return true;
+            case R.id.oldest_first:
+                sortList(item, NotesAdapter.oldestFirstComparator);
                 return true;
             default: return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void sortList(MenuItem item, Comparator<Note> noteComparator) {
+        Collections.sort(notesData, noteComparator);
+        notesAdapter.notifyDataSetChanged();
+        if (item.isChecked()) item.setChecked(false);
+        else item.setChecked(true);
     }
 
     @Override
