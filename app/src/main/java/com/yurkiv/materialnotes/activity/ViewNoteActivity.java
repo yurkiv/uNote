@@ -1,5 +1,7 @@
 package com.yurkiv.materialnotes.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -25,6 +27,9 @@ public class ViewNoteActivity extends ActionBarActivity {
 
     private Note note;
 
+    private static DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+    private static DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
+
 
 
     @Override
@@ -42,9 +47,7 @@ public class ViewNoteActivity extends ActionBarActivity {
 
         textTitle.setText(note.getTitle());
         textContent.setText(note.getContent());
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
-        textUpdated.setText(dateFormat.format(note.getUpdatedAt())+" , "+timeFormat.format(note.getUpdatedAt()));
+        textUpdated.setText(dateFormat.format(note.getUpdatedAt())+", "+timeFormat.format(note.getUpdatedAt()));
 
         textTitle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,8 +72,8 @@ public class ViewNoteActivity extends ActionBarActivity {
                 Log.d("ViewNoteActivity", "RESULT_OK");
                 note = (Note) data.getSerializableExtra(EXTRA_NOTE);
                 textTitle.setText(note.getTitle());
-                textUpdated.setText(note.getUpdatedAt().toString());
                 textContent.setText(note.getContent());
+                
             }
         }
 
@@ -90,6 +93,10 @@ public class ViewNoteActivity extends ActionBarActivity {
                 return true;
             case R.id.delete_note:
                 deleteNote();
+                return true;
+            case R.id.share_note:
+                shareNote();
+                return true;
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -102,7 +109,6 @@ public class ViewNoteActivity extends ActionBarActivity {
         Intent intentHome = new Intent(this, MainActivity.class);
         intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intentHome.putExtra(EXTRA_NOTE, note);
-        Log.d("ViewNoteActivity", note.toString());
         //startActivity(intentHome);
         setResult(RESULT_OK, intentHome);
         //setResult(RESULT_CANCELED, new Intent());
@@ -116,12 +122,34 @@ public class ViewNoteActivity extends ActionBarActivity {
     }
 
     private void deleteNote() {
-        Intent intentHome = new Intent(this, MainActivity.class);
-        intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intentHome.putExtra(EXTRA_NOTE, note);
-        //startActivity(intentHome);
-        setResult(RequestResultCode.RESULT_CODE_DELETE_NOTE, intentHome);
-        //setResult(RESULT_CANCELED, new Intent());
-        finish();
+        AlertDialog.Builder builder=new AlertDialog.Builder(ViewNoteActivity.this);
+        builder.setMessage("Do you want to delete the note?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intentHome = new Intent(ViewNoteActivity.this, MainActivity.class);
+                        intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intentHome.putExtra(EXTRA_NOTE, note);
+                        setResult(RequestResultCode.RESULT_CODE_DELETE_NOTE, intentHome);
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setCancelable(true);
+        AlertDialog alertDialog=builder.create();
+        alertDialog.show();
+    }
+
+    private void shareNote(){
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, note.getTitle()+"\n"+note.getContent());
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
     }
 }

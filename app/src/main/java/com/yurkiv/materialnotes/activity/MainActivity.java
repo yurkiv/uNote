@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.melnykov.fab.FloatingActionButton;
 import com.yurkiv.materialnotes.R;
 import com.yurkiv.materialnotes.data.DatabaseHelper;
 import com.yurkiv.materialnotes.data.Note;
@@ -54,6 +55,9 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
         textEmpty = (TextView) findViewById(R.id.textEmpty);
         listNotes = (ListView) findViewById(R.id.listNotes);
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.attachToListView(listNotes);
+
         //initSimpleNote();
         setupNotesAdapter();
         updateView();
@@ -65,6 +69,14 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
                 Intent intent=new Intent(MainActivity.this, ViewNoteActivity.class);
                 intent.putExtra(EXTRA_NOTE, note);
                 startActivityForResult(intent, RequestResultCode.REQUEST_CODE_VIEW_NOTE);
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this, EditNoteActivity.class);
+                startActivityForResult(intent, RequestResultCode.REQUEST_CODE_ADD_NOTE);
             }
         });
 
@@ -144,19 +156,22 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
         Toast.makeText(MainActivity.this, "The note has been deleted.", Toast.LENGTH_LONG).show();
     }
 
+
+    private void sortList(MenuItem item, Comparator<Note> noteComparator) {
+        Collections.sort(notesData, noteComparator);
+        notesAdapter.notifyDataSetChanged();
+        if (item.isChecked()) item.setChecked(false);
+        else item.setChecked(true);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater=getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
-
         SearchManager searchManager= (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchMenuItem=menu.findItem(R.id.search_note);
-
-
         searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
-
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
         searchView.setOnQueryTextListener(this);
         return true;
     }
@@ -164,10 +179,6 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.add_note:
-                Intent intent=new Intent(MainActivity.this, EditNoteActivity.class);
-                startActivityForResult(intent, RequestResultCode.REQUEST_CODE_ADD_NOTE);
-                return true;
             case R.id.sort_by_title:
                 sortList(item, NotesAdapter.titleComparator);
                 return true;
@@ -179,13 +190,6 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
                 return true;
             default: return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void sortList(MenuItem item, Comparator<Note> noteComparator) {
-        Collections.sort(notesData, noteComparator);
-        notesAdapter.notifyDataSetChanged();
-        if (item.isChecked()) item.setChecked(false);
-        else item.setChecked(true);
     }
 
     @Override

@@ -3,4 +3,19 @@
     <color name="title_background_color">#e0e0e0</color>
     <color name="update_text_color">#9e9e9e</color>
     <color name="edit_text_color">#424242</color>
+
+    <color name="primary">#3F51B5</color>
+    <color name="primary_dark">#303F9F</color>
+    <color name="accent">#FF5722</color>
+    <color name="accent_dark">#dd2c00</color>
+    <color name="accent_light">#ff9e80</color>
+
+    <color name="primary_light">#C5CAE9</color>
+    <color name="text">#FFFFFF</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#727272</color>
+    <color name="divider_color">#B6B6B6</color>
+
+
+
 </resources>

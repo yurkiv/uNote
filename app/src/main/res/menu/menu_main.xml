@@ -3,11 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.yurkiv.materialnotes.activity.MainActivity">
 
-    <item android:id="@+id/add_note"
-        android:icon="@drawable/ic_add"
-        android:title="@string/add_note"
-        app:showAsAction="always" />
-
     <item android:id="@+id/search_note"
         android:icon="@drawable/ic_search"
         android:title="@string/search_note"
@@ -17,7 +12,7 @@
     <item android:id="@+id/sort_note"
         android:icon="@drawable/ic_sort"
         android:title="@string/sort_note"
-        app:showAsAction="ifRoom" >
+        app:showAsAction="always" >
         <!-- "sort" submenu -->
         <menu>
             <group android:checkableBehavior="single">
@@ -30,14 +25,13 @@
             </group>
         </menu>
     </item>
+    <!--<item android:id="@+id/settings"-->
+        <!--android:title="@string/action_settings"-->
+        <!--android:orderInCategory="100"-->
+        <!--app:showAsAction="never" />-->
 
-    <item android:id="@+id/settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
-
-    <item android:id="@+id/help"
-        android:title="@string/help"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+    <!--<item android:id="@+id/help"-->
+        <!--android:title="@string/help"-->
+        <!--android:orderInCategory="100"-->
+        <!--app:showAsAction="never" />-->
 </menu>
