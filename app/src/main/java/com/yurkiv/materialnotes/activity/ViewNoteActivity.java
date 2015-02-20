@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.yurkiv.materialnotes.R;
-import com.yurkiv.materialnotes.data.Note;
+import com.yurkiv.materialnotes.model.Note;
 import com.yurkiv.materialnotes.util.RequestResultCode;
 
 import java.text.DateFormat;
@@ -106,7 +106,7 @@ public class ViewNoteActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intentHome = new Intent(this, MainActivity.class);
+        Intent intentHome = new Intent(this, NoteListActivity.class);
         intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intentHome.putExtra(EXTRA_NOTE, note);
         //startActivity(intentHome);
@@ -127,7 +127,7 @@ public class ViewNoteActivity extends ActionBarActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intentHome = new Intent(ViewNoteActivity.this, MainActivity.class);
+                        Intent intentHome = new Intent(ViewNoteActivity.this, NoteListActivity.class);
                         intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intentHome.putExtra(EXTRA_NOTE, note);
                         setResult(RequestResultCode.RESULT_CODE_DELETE_NOTE, intentHome);

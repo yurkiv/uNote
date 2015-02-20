@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.yurkiv.materialnotes.model.Note;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

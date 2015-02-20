@@ -1,4 +1,4 @@
-package com.yurkiv.materialnotes.data;
+package com.yurkiv.materialnotes.adapter;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,9 +10,9 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.yurkiv.materialnotes.R;
+import com.yurkiv.materialnotes.model.Note;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;

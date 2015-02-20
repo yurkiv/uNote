@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.yurkiv.materialnotes.R;
-import com.yurkiv.materialnotes.data.Note;
+import com.yurkiv.materialnotes.model.Note;
 
 import java.util.Date;
 

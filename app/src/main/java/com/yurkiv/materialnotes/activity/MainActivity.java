@@ -1,205 +1,76 @@
 package com.yurkiv.materialnotes.activity;
 
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
-import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.melnykov.fab.FloatingActionButton;
 import com.yurkiv.materialnotes.R;
-import com.yurkiv.materialnotes.data.DatabaseHelper;
-import com.yurkiv.materialnotes.data.Note;
-import com.yurkiv.materialnotes.data.NotesAdapter;
-import com.yurkiv.materialnotes.util.RequestResultCode;
+import com.yurkiv.materialnotes.fragment.NavigationDrawerFragment;
+import com.yurkiv.materialnotes.util.HashtagCallbacks;
+import com.yurkiv.materialnotes.util.MentionCallbacks;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+public class MainActivity extends ActionBarActivity implements HashtagCallbacks, MentionCallbacks {
 
-
-public class MainActivity extends ActionBarActivity implements SearchView.OnQueryTextListener {
-
-    private static final String EXTRA_NOTE = "EXTRA_NOTE";
-    private static final int VIEW_NOTE_RESULT_CODE = 5;
-
-
-    private TextView textEmpty;
-    private ListView listNotes;
-
-    private List<Note> notesData;
-    private NotesAdapter notesAdapter;
-    private SearchView searchView;
-    private MenuItem searchMenuItem;
-
-    private DatabaseHelper databaseHelper;
+    private Toolbar mToolbar;
+    private NavigationDrawerFragment mNavigationDrawerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        databaseHelper=new DatabaseHelper(getApplicationContext());
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        textEmpty = (TextView) findViewById(R.id.textEmpty);
-        listNotes = (ListView) findViewById(R.id.listNotes);
+        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+        mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.attachToListView(listNotes);
-
-        //initSimpleNote();
-        setupNotesAdapter();
-        updateView();
-
-        listNotes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Note note=notesData.get(position);
-                Intent intent=new Intent(MainActivity.this, ViewNoteActivity.class);
-                intent.putExtra(EXTRA_NOTE, note);
-                startActivityForResult(intent, RequestResultCode.REQUEST_CODE_VIEW_NOTE);
-            }
-        });
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this, EditNoteActivity.class);
-                startActivityForResult(intent, RequestResultCode.REQUEST_CODE_ADD_NOTE);
-            }
-        });
-
-    }
-
-    private void initSimpleNote(){
-        for (int i = 0; i < 10; i++) {
-            Note note=new Note();
-            note.setTitle("Note " + i);
-            note.setContent("Content " + i);
-            note.setUpdatedAt(new Date());
-            databaseHelper.createNote(note);
-        }
-    }
-
-    private void setupNotesAdapter(){
-        notesData=databaseHelper.getAllNotes();
-        notesAdapter=new NotesAdapter(notesData);
-        listNotes.setAdapter(notesAdapter);
-    }
-
-    private void updateView(){
-        if (notesData.isEmpty()){
-            listNotes.setVisibility(View.GONE);
-            textEmpty.setVisibility(View.VISIBLE);
-        } else {
-            listNotes.setVisibility(View.VISIBLE);
-            textEmpty.setVisibility(View.GONE);
-        }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode==RequestResultCode.REQUEST_CODE_VIEW_NOTE){
-            if (resultCode==RESULT_OK){
-                updateNote(data);
-            } else if (resultCode==RequestResultCode.RESULT_CODE_DELETE_NOTE){
-                deleteNote(data);
-            }
-        }
-        if (requestCode==RequestResultCode.REQUEST_CODE_ADD_NOTE){
-            if (resultCode==RESULT_OK){
-                addNote(data);
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onHashtagItemSelected(int position) {
+        Toast.makeText(this, "hashtag selected -> " + position, Toast.LENGTH_SHORT).show();
     }
 
-    private void addNote(Intent data){
-        Note note= (Note) data.getSerializableExtra(EXTRA_NOTE);
-        long noteId=databaseHelper.createNote(note);
-        note.setId(noteId);
-        notesData.add(note);
-        updateView();
-        notesAdapter.notifyDataSetChanged();
+    @Override
+    public void onMentionItemSelected(int position) {
+        Toast.makeText(this, "mention selected -> " + position, Toast.LENGTH_SHORT).show();
     }
 
-    private void updateNote(Intent data) {
-        Note updatedNote= (Note) data.getSerializableExtra(EXTRA_NOTE);
-        databaseHelper.updateNote(updatedNote);
-        for (Note note: notesData){
-            if (note.getId().equals(updatedNote.getId())){
-                note.setTitle(updatedNote.getTitle());
-                note.setContent(updatedNote.getContent());
-                note.setUpdatedAt(updatedNote.getUpdatedAt());
-            }
-        }
-        notesAdapter.notifyDataSetChanged();
-    }
-
-    private void deleteNote(Intent data) {
-        Note deletedNote= (Note) data.getSerializableExtra(EXTRA_NOTE);
-        databaseHelper.deleteNote(deletedNote);
-        notesData.remove(deletedNote);
-        updateView();
-        notesAdapter.notifyDataSetChanged();
-        Toast.makeText(MainActivity.this, "The note has been deleted.", Toast.LENGTH_LONG).show();
-    }
-
-
-    private void sortList(MenuItem item, Comparator<Note> noteComparator) {
-        Collections.sort(notesData, noteComparator);
-        notesAdapter.notifyDataSetChanged();
-        if (item.isChecked()) item.setChecked(false);
-        else item.setChecked(true);
+    @Override
+    public void onBackPressed() {
+        if (mNavigationDrawerFragment.isDrawerOpen())
+            mNavigationDrawerFragment.closeDrawer();
+        else
+            super.onBackPressed();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater=getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        SearchManager searchManager= (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchMenuItem=menu.findItem(R.id.search_note);
-        searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(this);
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.sort_by_title:
-                sortList(item, NotesAdapter.titleComparator);
-                return true;
-            case R.id.newest_first:
-                sortList(item, NotesAdapter.newestFirstComparator);
-                return true;
-            case R.id.oldest_first:
-                sortList(item, NotesAdapter.oldestFirstComparator);
-                return true;
-            default: return super.onOptionsItemSelected(item);
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String s) {
-        return false;
-    }
 
-    @Override
-    public boolean onQueryTextChange(String s) {
-        notesAdapter.getFilter().filter(s);
-        return true;
-    }
 }

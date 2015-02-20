@@ -1,4 +1,4 @@
-package com.yurkiv.materialnotes.data;
+package com.yurkiv.materialnotes.model;
 
 import java.io.Serializable;
 import java.util.Date;
