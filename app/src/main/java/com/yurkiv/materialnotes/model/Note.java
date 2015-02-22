@@ -7,10 +7,20 @@ import java.util.Date;
  * Created by yurkiv on 02.02.2015.
  */
 public class Note implements Serializable {
+
+    private static final long serialVersionUID = -1213949467658913456L;
+
     private Long id;
     private String title;
     private String content;
     private Date updatedAt;
+
+    public Note(String title) {
+        this.title = title;
+    }
+
+    public Note() {
+    }
 
     public Long getId() {
         return id;
@@ -73,8 +83,8 @@ public class Note implements Serializable {
         return new StringBuilder()
                 .append("Note [id=").append(id)
                 .append(", title=").append(title)
-                .append(", content").append(content)
-                .append(", updatedAt").append(updatedAt)
+                .append(", content=").append(content)
+                .append(", updatedAt=").append(updatedAt)
                 .append("]").toString();
     }
 

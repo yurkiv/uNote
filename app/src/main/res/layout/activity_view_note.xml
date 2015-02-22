@@ -3,10 +3,17 @@
     android:layout_height="match_parent"
     tools:context="com.yurkiv.materialnotes.activity.ViewNoteActivity">
 
+    <include
+        android:id="@+id/view_note_toolbar"
+        layout="@layout/toolbar_default"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollView" >
+        android:id="@+id/scrollView"
+        android:layout_below="@+id/view_note_toolbar">
 
         <LinearLayout
             android:orientation="vertical"

@@ -4,9 +4,11 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,8 +21,11 @@ import android.widget.Toast;
 import com.melnykov.fab.FloatingActionButton;
 import com.yurkiv.materialnotes.R;
 import com.yurkiv.materialnotes.data.DatabaseHelper;
+import com.yurkiv.materialnotes.fragment.NavigationDrawerFragment;
 import com.yurkiv.materialnotes.model.Note;
 import com.yurkiv.materialnotes.adapter.NotesAdapter;
+import com.yurkiv.materialnotes.util.HashtagCallbacks;
+import com.yurkiv.materialnotes.util.MentionCallbacks;
 import com.yurkiv.materialnotes.util.RequestResultCode;
 
 import java.util.Collections;
@@ -29,11 +34,13 @@ import java.util.Date;
 import java.util.List;
 
 
-public class NoteListActivity extends ActionBarActivity implements SearchView.OnQueryTextListener {
+public class ListNoteActivity extends ActionBarActivity implements SearchView.OnQueryTextListener, HashtagCallbacks, MentionCallbacks {
 
     private static final String EXTRA_NOTE = "EXTRA_NOTE";
     private static final int VIEW_NOTE_RESULT_CODE = 5;
 
+    private Toolbar mToolbar;
+    private NavigationDrawerFragment mNavigationDrawerFragment;
 
     private TextView textEmpty;
     private ListView listNotes;
@@ -49,6 +56,13 @@ public class NoteListActivity extends ActionBarActivity implements SearchView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notelist);
+
+        mToolbar = (Toolbar) findViewById(R.id.note_list_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+        mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
 
         databaseHelper=new DatabaseHelper(getApplicationContext());
 
@@ -66,7 +80,7 @@ public class NoteListActivity extends ActionBarActivity implements SearchView.On
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Note note=notesData.get(position);
-                Intent intent=new Intent(NoteListActivity.this, ViewNoteActivity.class);
+                Intent intent=new Intent(ListNoteActivity.this, ViewNoteActivity.class);
                 intent.putExtra(EXTRA_NOTE, note);
                 startActivityForResult(intent, RequestResultCode.REQUEST_CODE_VIEW_NOTE);
             }
@@ -75,7 +89,7 @@ public class NoteListActivity extends ActionBarActivity implements SearchView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(NoteListActivity.this, EditNoteActivity.class);
+                Intent intent=new Intent(ListNoteActivity.this, EditNoteActivity.class);
                 startActivityForResult(intent, RequestResultCode.REQUEST_CODE_ADD_NOTE);
             }
         });
@@ -153,7 +167,7 @@ public class NoteListActivity extends ActionBarActivity implements SearchView.On
         notesData.remove(deletedNote);
         updateView();
         notesAdapter.notifyDataSetChanged();
-        Toast.makeText(NoteListActivity.this, "The note has been deleted.", Toast.LENGTH_LONG).show();
+        Toast.makeText(ListNoteActivity.this, "The note has been deleted.", Toast.LENGTH_LONG).show();
     }
 
 
@@ -193,6 +207,14 @@ public class NoteListActivity extends ActionBarActivity implements SearchView.On
     }
 
     @Override
+    public void onBackPressed() {
+        if (mNavigationDrawerFragment.isDrawerOpen())
+            mNavigationDrawerFragment.closeDrawer();
+        else
+            super.onBackPressed();
+    }
+
+    @Override
     public boolean onQueryTextSubmit(String s) {
         return false;
     }
@@ -201,5 +223,15 @@ public class NoteListActivity extends ActionBarActivity implements SearchView.On
     public boolean onQueryTextChange(String s) {
         notesAdapter.getFilter().filter(s);
         return true;
+    }
+
+    @Override
+    public void onHashtagItemSelected(int position) {
+        Toast.makeText(this, "hashtag selected -> " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMentionItemSelected(int position) {
+        Toast.makeText(this, "mention selected -> " + position, Toast.LENGTH_SHORT).show();
     }
 }

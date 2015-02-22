@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -19,6 +20,8 @@ public class EditNoteActivity extends ActionBarActivity {
 
     private static final String EXTRA_NOTE = "EXTRA_NOTE";
 
+    private Toolbar mToolbar;
+
     private EditText editTitle;
     private EditText editContent;
     private Note note;
@@ -27,6 +30,9 @@ public class EditNoteActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_note);
+
+        mToolbar = (Toolbar) findViewById(R.id.edit_note_toolbar);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         editTitle = (EditText) findViewById(R.id.editTitle);

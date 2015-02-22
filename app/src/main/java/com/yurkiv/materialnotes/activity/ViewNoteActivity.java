@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +21,8 @@ import java.text.DateFormat;
 public class ViewNoteActivity extends ActionBarActivity {
 
     private static final String EXTRA_NOTE = "EXTRA_NOTE";
+
+    private Toolbar toolbar;
 
     private TextView textTitle;
     private TextView textUpdated;
@@ -37,6 +40,8 @@ public class ViewNoteActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_note);
 
+        toolbar = (Toolbar) findViewById(R.id.view_note_toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         textTitle = (TextView) findViewById(R.id.textTitle);
@@ -106,7 +111,7 @@ public class ViewNoteActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intentHome = new Intent(this, NoteListActivity.class);
+        Intent intentHome = new Intent(this, ListNoteActivity.class);
         intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intentHome.putExtra(EXTRA_NOTE, note);
         //startActivity(intentHome);
@@ -127,7 +132,7 @@ public class ViewNoteActivity extends ActionBarActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intentHome = new Intent(ViewNoteActivity.this, NoteListActivity.class);
+                        Intent intentHome = new Intent(ViewNoteActivity.this, ListNoteActivity.class);
                         intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intentHome.putExtra(EXTRA_NOTE, note);
                         setResult(RequestResultCode.RESULT_CODE_DELETE_NOTE, intentHome);

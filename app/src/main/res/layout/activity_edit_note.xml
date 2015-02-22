@@ -3,13 +3,18 @@
     android:layout_height="match_parent"
     tools:context="com.yurkiv.materialnotes.activity.EditNoteActivity">
 
+    <include
+        android:id="@+id/edit_note_toolbar"
+        layout="@layout/toolbar_default"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_below="@+id/edit_note_toolbar"
         android:padding="16dp">
 
         <EditText

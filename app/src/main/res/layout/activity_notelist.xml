@@ -1,39 +1,70 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yurkiv.materialnotes.activity.NoteListActivity">
+    tools:context="com.yurkiv.materialnotes.activity.ListNoteActivity" >
 
-    <ListView
-        android:id="@+id/listNotes"
+    <include
+        android:id="@+id/note_list_toolbar"
+        layout="@layout/toolbar_default"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@android:color/transparent" />
+        android:layout_height="wrap_content"/>
 
-
-
-    <TextView
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:gravity="center"
-        android:text="@string/no_notes"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/textEmpty" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/note_list_toolbar">
 
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add"
-        fab:fab_colorNormal="@color/accent"
-        fab:fab_colorPressed="@color/accent_dark"
-        fab:fab_colorRipple="@color/accent_light"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        <RelativeLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:layout_height="match_parent">
 
+            <ListView
+                android:id="@+id/listNotes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@android:color/transparent" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="@string/no_notes"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/textEmpty" />
+
+            <com.melnykov.fab.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_add"
+                app:fab_colorNormal="@color/accent"
+                app:fab_colorPressed="@color/accent_dark"
+                app:fab_colorRipple="@color/accent_light"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+        <!-- android:layout_marginTop="?android:attr/actionBarSize"-->
+        <fragment
+            android:id="@+id/fragment_drawer"
+            android:name="com.yurkiv.materialnotes.fragment.NavigationDrawerFragment"
+            android:layout_width="@dimen/navigation_drawer_width"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:layout="@layout/fragment_navigation_drawer"
+            tools:layout="@layout/fragment_navigation_drawer" />
+    </android.support.v4.widget.DrawerLayout>
 </RelativeLayout>
