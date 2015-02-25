@@ -1,7 +1,9 @@
 package com.yurkiv.materialnotes.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yurkiv on 02.02.2015.
@@ -14,6 +16,7 @@ public class Note implements Serializable {
     private String title;
     private String content;
     private Date updatedAt;
+    private List<Hashtag> hashtags;
 
     public Note(String title) {
         this.title = title;
@@ -54,6 +57,14 @@ public class Note implements Serializable {
         this.updatedAt = updatedAt;
     }
 
+    public List<Hashtag> getHashtags() {
+        return hashtags;
+    }
+
+    public void setHashtags(List<Hashtag> hashtags) {
+        this.hashtags = hashtags;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this==obj) return true;
@@ -75,6 +86,11 @@ public class Note implements Serializable {
         if (updatedAt==null){
             if (note.updatedAt!=null)return false;
         } else if (!updatedAt.equals(note.updatedAt)) return false;
+
+        if (hashtags==null){
+            if (note.hashtags!=null)return false;
+        } else if (!hashtags.equals(note.hashtags)) return false;
+
         return true;
     }
 
@@ -85,6 +101,7 @@ public class Note implements Serializable {
                 .append(", title=").append(title)
                 .append(", content=").append(content)
                 .append(", updatedAt=").append(updatedAt)
+                .append(", hashtags=").append(hashtags)
                 .append("]").toString();
     }
 
@@ -96,6 +113,7 @@ public class Note implements Serializable {
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((hashtags == null) ? 0 : hashtags.hashCode());
         return result;
     }
 }

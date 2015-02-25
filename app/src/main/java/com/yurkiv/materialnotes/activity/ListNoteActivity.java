@@ -22,6 +22,7 @@ import com.melnykov.fab.FloatingActionButton;
 import com.yurkiv.materialnotes.R;
 import com.yurkiv.materialnotes.data.DatabaseHelper;
 import com.yurkiv.materialnotes.fragment.NavigationDrawerFragment;
+import com.yurkiv.materialnotes.model.Hashtag;
 import com.yurkiv.materialnotes.model.Note;
 import com.yurkiv.materialnotes.adapter.NotesAdapter;
 import com.yurkiv.materialnotes.util.HashtagCallbacks;
@@ -31,6 +32,7 @@ import com.yurkiv.materialnotes.util.RequestResultCode;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -39,13 +41,14 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
     private static final String EXTRA_NOTE = "EXTRA_NOTE";
     private static final int VIEW_NOTE_RESULT_CODE = 5;
 
-    private Toolbar mToolbar;
-    private NavigationDrawerFragment mNavigationDrawerFragment;
+    private Toolbar toolbar;
+    private NavigationDrawerFragment navigationDrawerFragment;
 
     private TextView textEmpty;
     private ListView listNotes;
 
     private List<Note> notesData;
+    private HashSet<Hashtag> hashtags;
     private NotesAdapter notesAdapter;
     private SearchView searchView;
     private MenuItem searchMenuItem;
@@ -57,14 +60,14 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notelist);
 
-        mToolbar = (Toolbar) findViewById(R.id.note_list_toolbar);
-        setSupportActionBar(mToolbar);
+        databaseHelper=new DatabaseHelper(getApplicationContext());
+
+        toolbar = (Toolbar) findViewById(R.id.note_list_toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
-        mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
-
-        databaseHelper=new DatabaseHelper(getApplicationContext());
+        navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+        navigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), toolbar);
 
         textEmpty = (TextView) findViewById(R.id.textEmpty);
         listNotes = (ListView) findViewById(R.id.listNotes);
@@ -110,6 +113,7 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
         notesData=databaseHelper.getAllNotes();
         notesAdapter=new NotesAdapter(notesData);
         listNotes.setAdapter(notesAdapter);
+        hashtags=new HashSet<>();
     }
 
     private void updateView(){
@@ -126,9 +130,11 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode==RequestResultCode.REQUEST_CODE_VIEW_NOTE){
             if (resultCode==RESULT_OK){
-                updateNote(data);
+
             } else if (resultCode==RequestResultCode.RESULT_CODE_DELETE_NOTE){
                 deleteNote(data);
+            } else if (resultCode==RequestResultCode.RESULT_CODE_EDIT_NOTE){
+                updateNote(data);
             }
         }
         if (requestCode==RequestResultCode.REQUEST_CODE_ADD_NOTE){
@@ -140,10 +146,12 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
     }
 
     private void addNote(Intent data){
-        Note note= (Note) data.getSerializableExtra(EXTRA_NOTE);
+        Note note = (Note) data.getSerializableExtra(EXTRA_NOTE);
         long noteId=databaseHelper.createNote(note);
         note.setId(noteId);
         notesData.add(note);
+        hashtags.addAll(note.getHashtags());
+
         updateView();
         notesAdapter.notifyDataSetChanged();
     }
@@ -151,6 +159,7 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
     private void updateNote(Intent data) {
         Note updatedNote= (Note) data.getSerializableExtra(EXTRA_NOTE);
         databaseHelper.updateNote(updatedNote);
+        hashtags.addAll(updatedNote.getHashtags());
         for (Note note: notesData){
             if (note.getId().equals(updatedNote.getId())){
                 note.setTitle(updatedNote.getTitle());
@@ -208,8 +217,8 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
 
     @Override
     public void onBackPressed() {
-        if (mNavigationDrawerFragment.isDrawerOpen())
-            mNavigationDrawerFragment.closeDrawer();
+        if (navigationDrawerFragment.isDrawerOpen())
+            navigationDrawerFragment.closeDrawer();
         else
             super.onBackPressed();
     }

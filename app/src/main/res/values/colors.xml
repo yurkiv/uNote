@@ -32,7 +32,7 @@
     <color name="accent_light">#ff9e80</color>
 
     <color name="primary_light">#C5CAE9</color>
-    <color name="text">#FFFFFF</color>
+    <color name="name">#FFFFFF</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
     <color name="divider_color">#B6B6B6</color>

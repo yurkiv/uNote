@@ -1,9 +1,7 @@
 package com.yurkiv.materialnotes.adapter;
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,7 +9,6 @@ import android.widget.TextView;
 
 import com.yurkiv.materialnotes.R;
 import com.yurkiv.materialnotes.model.Hashtag;
-import com.yurkiv.materialnotes.util.HashtagCallbacks;
 
 import java.util.List;
 
@@ -51,7 +48,7 @@ public class HashtagAdapter extends BaseAdapter {
         } else {
             holder= (ViewHolder) convertView.getTag();
         }
-        holder.textView.setText(hashtags.get(position).getText());
+        holder.textView.setText(hashtags.get(position).getName());
         return convertView;
     }
 

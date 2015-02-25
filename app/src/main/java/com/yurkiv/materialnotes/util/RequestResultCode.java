@@ -9,4 +9,5 @@ public class RequestResultCode {
     public static final int REQUEST_CODE_UPDATE_NOTE=3;
     public static final int REQUEST_CODE_ADD_NOTE=4;
     public static final int RESULT_CODE_DELETE_NOTE=5;
+    public static final int RESULT_CODE_EDIT_NOTE=6;
 }

@@ -6,14 +6,18 @@ import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.yurkiv.materialnotes.R;
+import com.yurkiv.materialnotes.model.Hashtag;
 import com.yurkiv.materialnotes.model.Note;
+import com.yurkiv.materialnotes.util.Utility;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class EditNoteActivity extends ActionBarActivity {
@@ -81,9 +85,17 @@ public class EditNoteActivity extends ActionBarActivity {
     }
 
     private void setNoteResult() {
-        note.setTitle(editTitle.getText().toString().trim());
-        note.setContent(editContent.getText().toString().trim());
+        String title=editTitle.getText().toString().trim();
+        String content=editContent.getText().toString().trim();
+        ArrayList<Hashtag> hashtags= Utility.getHashtagsFromContent(title+" "+content);
+
+        note.setTitle(title);
+        note.setContent(content);
         note.setUpdatedAt(new Date());
+        note.setHashtags(hashtags);
+
+        Log.d("sf", note.getHashtags().toString());
+
         Intent intent=new Intent();
         intent.putExtra(EXTRA_NOTE, note);
         setResult(RESULT_OK, intent);

@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:text="@string/no_notes"
+                android:name="@string/no_notes"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/textEmpty" />
 

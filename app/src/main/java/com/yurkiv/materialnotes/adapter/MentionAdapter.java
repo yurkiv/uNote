@@ -1,9 +1,7 @@
 package com.yurkiv.materialnotes.adapter;
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,7 +9,6 @@ import android.widget.TextView;
 
 import com.yurkiv.materialnotes.R;
 import com.yurkiv.materialnotes.model.Mention;
-import com.yurkiv.materialnotes.util.MentionCallbacks;
 
 import java.util.List;
 
@@ -50,7 +47,7 @@ public class MentionAdapter extends BaseAdapter {
         } else {
             holder= (ViewHolder) convertView.getTag();
         }
-        holder.textView.setText(mentions.get(position).getText());
+        holder.textView.setText(mentions.get(position).getName());
 
         return convertView;
     }

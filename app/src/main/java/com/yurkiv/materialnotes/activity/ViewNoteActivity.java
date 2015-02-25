@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,14 +14,21 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.yurkiv.materialnotes.R;
+import com.yurkiv.materialnotes.model.Hashtag;
 import com.yurkiv.materialnotes.model.Note;
 import com.yurkiv.materialnotes.util.RequestResultCode;
+import com.yurkiv.materialnotes.util.Utility;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ViewNoteActivity extends ActionBarActivity {
 
     private static final String EXTRA_NOTE = "EXTRA_NOTE";
+    private static int RESULT_CODE_VIEW_NOTE = RESULT_OK;
+    private static final String TAG = ViewNoteActivity.class.getSimpleName();
 
     private Toolbar toolbar;
 
@@ -67,18 +75,20 @@ public class ViewNoteActivity extends ActionBarActivity {
                 editNote();
             }
         });
+
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("ViewNoteActivity", "onActivityResult");
-        if (requestCode== RequestResultCode.REQUEST_CODE_EDIT_NOTE){
+        if (requestCode==RequestResultCode.REQUEST_CODE_EDIT_NOTE){
             if (resultCode==RESULT_OK){
                 Log.d("ViewNoteActivity", "RESULT_OK");
                 note = (Note) data.getSerializableExtra(EXTRA_NOTE);
                 textTitle.setText(note.getTitle());
                 textContent.setText(note.getContent());
-                
+                RESULT_CODE_VIEW_NOTE=RequestResultCode.RESULT_CODE_EDIT_NOTE;
             }
         }
 
@@ -115,7 +125,7 @@ public class ViewNoteActivity extends ActionBarActivity {
         intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intentHome.putExtra(EXTRA_NOTE, note);
         //startActivity(intentHome);
-        setResult(RESULT_OK, intentHome);
+        setResult(RESULT_CODE_VIEW_NOTE, intentHome);
         //setResult(RESULT_CANCELED, new Intent());
         finish();
     }

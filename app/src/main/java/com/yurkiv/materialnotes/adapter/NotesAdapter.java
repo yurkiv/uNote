@@ -60,7 +60,7 @@ public class NotesAdapter extends BaseAdapter implements Filterable {
             holder= (ViewHolder) convertView.getTag();
         }
         Note note=getItem(position);
-        holder.textRow.setText(note.getTitle());
+        holder.textRow.setText(note.getContent());
         return convertView;
     }
 
