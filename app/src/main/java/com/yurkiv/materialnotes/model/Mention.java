@@ -4,8 +4,11 @@ package com.yurkiv.materialnotes.model;
  * Created by yurkiv on 19.02.2015.
  */
 public class Mention {
-    private Long id;
-    private String name;
+    protected Long id;
+    protected String name;
+
+    public Mention() {
+    }
 
     public Mention(String name) {
         this.name = name;
@@ -25,5 +28,13 @@ public class Mention {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Mention{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

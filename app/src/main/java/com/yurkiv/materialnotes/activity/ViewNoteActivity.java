@@ -3,10 +3,9 @@ package com.yurkiv.materialnotes.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,15 +13,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.yurkiv.materialnotes.R;
-import com.yurkiv.materialnotes.model.Hashtag;
 import com.yurkiv.materialnotes.model.Note;
 import com.yurkiv.materialnotes.util.RequestResultCode;
-import com.yurkiv.materialnotes.util.Utility;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import io.realm.Realm;
 
 public class ViewNoteActivity extends ActionBarActivity {
 
@@ -56,11 +52,14 @@ public class ViewNoteActivity extends ActionBarActivity {
         textUpdated = (TextView) findViewById(R.id.textUpdated);
         textContent = (TextView) findViewById(R.id.textContent);
 
-        note = (Note) getIntent().getSerializableExtra(EXTRA_NOTE);
-
-        textTitle.setText(note.getTitle());
-        textContent.setText(note.getContent());
-        textUpdated.setText(dateFormat.format(note.getUpdatedAt())+", "+timeFormat.format(note.getUpdatedAt()));
+        if (!getIntent().getStringExtra(EXTRA_NOTE).isEmpty()){
+            String noteId=getIntent().getStringExtra(EXTRA_NOTE);
+            Realm realm = Realm.getInstance(this);
+            note=realm.where(Note.class).equalTo("id",noteId).findFirst();
+            textTitle.setText(note.getTitle());
+            textContent.setText(note.getContent());
+            textUpdated.setText(dateFormat.format(note.getUpdatedAt())+", "+timeFormat.format(note.getUpdatedAt()));
+        }
 
         textTitle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,9 +84,15 @@ public class ViewNoteActivity extends ActionBarActivity {
         if (requestCode==RequestResultCode.REQUEST_CODE_EDIT_NOTE){
             if (resultCode==RESULT_OK){
                 Log.d("ViewNoteActivity", "RESULT_OK");
-                note = (Note) data.getSerializableExtra(EXTRA_NOTE);
-                textTitle.setText(note.getTitle());
-                textContent.setText(note.getContent());
+                if (!getIntent().getStringExtra(EXTRA_NOTE).isEmpty()){
+                    String noteId=getIntent().getStringExtra(EXTRA_NOTE);
+                    Realm realm = Realm.getInstance(this);
+                    note=realm.where(Note.class).equalTo("id",noteId).findFirst();
+                    textTitle.setText(note.getTitle());
+                    textContent.setText(note.getContent());
+                    textUpdated.setText(dateFormat.format(note.getUpdatedAt())+", "+timeFormat.format(note.getUpdatedAt()));
+                }
+                Log.d("ViewNoteActivity", note.toString());
                 RESULT_CODE_VIEW_NOTE=RequestResultCode.RESULT_CODE_EDIT_NOTE;
             }
         }
@@ -123,7 +128,6 @@ public class ViewNoteActivity extends ActionBarActivity {
     public void onBackPressed() {
         Intent intentHome = new Intent(this, ListNoteActivity.class);
         intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intentHome.putExtra(EXTRA_NOTE, note);
         //startActivity(intentHome);
         setResult(RESULT_CODE_VIEW_NOTE, intentHome);
         //setResult(RESULT_CANCELED, new Intent());
@@ -132,7 +136,7 @@ public class ViewNoteActivity extends ActionBarActivity {
 
     private void editNote(){
         Intent intent=new Intent(ViewNoteActivity.this, EditNoteActivity.class);
-        intent.putExtra(EXTRA_NOTE, note);
+        intent.putExtra(EXTRA_NOTE, note.getId());
         startActivityForResult(intent, RequestResultCode.REQUEST_CODE_EDIT_NOTE);
     }
 
@@ -142,9 +146,14 @@ public class ViewNoteActivity extends ActionBarActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Realm realm = Realm.getInstance(getApplicationContext());
+                        Note toEdit = realm.where(Note.class)
+                                .equalTo("id", getIntent().getStringExtra(EXTRA_NOTE)).findFirst();
+                        realm.beginTransaction();
+                        toEdit.removeFromRealm();
+                        realm.commitTransaction();
                         Intent intentHome = new Intent(ViewNoteActivity.this, ListNoteActivity.class);
                         intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentHome.putExtra(EXTRA_NOTE, note);
                         setResult(RequestResultCode.RESULT_CODE_DELETE_NOTE, intentHome);
                         finish();
                     }

@@ -3,8 +3,8 @@ package com.yurkiv.materialnotes.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -19,6 +19,9 @@ import com.yurkiv.materialnotes.util.Utility;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
+
+import io.realm.Realm;
 
 public class EditNoteActivity extends ActionBarActivity {
 
@@ -28,6 +31,7 @@ public class EditNoteActivity extends ActionBarActivity {
 
     private EditText editTitle;
     private EditText editContent;
+
     private Note note;
 
     @Override
@@ -42,14 +46,15 @@ public class EditNoteActivity extends ActionBarActivity {
         editTitle = (EditText) findViewById(R.id.editTitle);
         editContent = (EditText) findViewById(R.id.editContent);
 
-        note = (Note) getIntent().getSerializableExtra(EXTRA_NOTE);
-        if (note!=null){
+        if (!getIntent().getStringExtra(EXTRA_NOTE).isEmpty()){
+            String noteId=getIntent().getStringExtra(EXTRA_NOTE);
+            Realm realm = Realm.getInstance(this);
+            note=realm.where(Note.class).equalTo("id",noteId).findFirst();
             editTitle.setText(note.getTitle());
             editContent.setText(note.getContent());
-        } else {
-            note=new Note();
-            note.setUpdatedAt(new Date());
         }
+
+
     }
 
     @Override
@@ -87,17 +92,30 @@ public class EditNoteActivity extends ActionBarActivity {
     private void setNoteResult() {
         String title=editTitle.getText().toString().trim();
         String content=editContent.getText().toString().trim();
-        ArrayList<Hashtag> hashtags= Utility.getHashtagsFromContent(title+" "+content);
+        ArrayList<Hashtag> hashtags= Utility.getHashtagsFromContent(title + " " + content);
 
+        Realm realm = Realm.getInstance(getApplicationContext());
+        realm.beginTransaction();
+        if (!getIntent().getStringExtra(EXTRA_NOTE).isEmpty()){
+            String noteId=getIntent().getStringExtra(EXTRA_NOTE);
+            note=realm.where(Note.class).equalTo("id",noteId).findFirst();
+        } else {
+            note=realm.createObject(Note.class);
+            note.setId(UUID.randomUUID().toString());
+        }
         note.setTitle(title);
         note.setContent(content);
         note.setUpdatedAt(new Date());
-        note.setHashtags(hashtags);
+
+        Hashtag realmHastag=null;
+        for (Hashtag hashtag:hashtags){
+            realmHastag=realm.copyToRealm(hashtag);
+            note.getHashtags().add(realmHastag);
+        }
+        realm.commitTransaction();
 
         Log.d("sf", note.getHashtags().toString());
-
         Intent intent=new Intent();
-        intent.putExtra(EXTRA_NOTE, note);
         setResult(RESULT_OK, intent);
         Toast.makeText(EditNoteActivity.this, "The note has been saved.", Toast.LENGTH_LONG).show();
     }

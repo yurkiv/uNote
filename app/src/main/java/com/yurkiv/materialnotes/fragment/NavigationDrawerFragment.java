@@ -2,8 +2,6 @@ package com.yurkiv.materialnotes.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,6 +26,7 @@ import com.yurkiv.materialnotes.util.MentionCallbacks;
 import com.yurkiv.materialnotes.util.Utility;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -38,12 +37,17 @@ public class NavigationDrawerFragment extends Fragment {
     private MentionCallbacks mentionCallbacks;
 
     private ListView listHashtags;
-    private ListView listMentions;
+//    private ListView listMentions;
+
+    private List<Hashtag> hashtagItems;
+    private List<Mention> mentionItems;
+
+    private HashtagAdapter hashtagAdapter;
+    private MentionAdapter mentionAdapter;
 
     private View mFragmentContainerView;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
-
 
     @Nullable
     @Override
@@ -51,15 +55,15 @@ public class NavigationDrawerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
 
         listHashtags = (ListView) view.findViewById(R.id.hashtagList);
-        listMentions = (ListView) view.findViewById(R.id.mentionList);
-        final List<Hashtag> hashtagItems = getHashtagList();
-        final List<Mention> mentionItems = getMentionsList();
-        HashtagAdapter hashtagAdapter = new HashtagAdapter(hashtagItems);
-        MentionAdapter mentionAdapter = new MentionAdapter(mentionItems);
+//        listMentions = (ListView) view.findViewById(R.id.mentionList);
+        hashtagItems = getHashtagList();
+        mentionItems = getMentionsList();
+        hashtagAdapter = new HashtagAdapter(hashtagItems);
+        mentionAdapter = new MentionAdapter(mentionItems);
         listHashtags.setAdapter(hashtagAdapter);
-        listMentions.setAdapter(mentionAdapter);
+//        listMentions.setAdapter(mentionAdapter);
         Utility.setListViewHeightBasedOnChildren(listHashtags);
-        Utility.setListViewHeightBasedOnChildren(listMentions);
+//        Utility.setListViewHeightBasedOnChildren(listMentions);
 
         listHashtags.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -68,22 +72,22 @@ public class NavigationDrawerFragment extends Fragment {
                     mDrawerLayout.closeDrawer(mFragmentContainerView);
                 }
                 if (hashtagCallbacks != null) {
-                    hashtagCallbacks.onHashtagItemSelected(position);
+                    hashtagCallbacks.onHashtagItemSelected(hashtagItems.get(position));
                 }
             }
         });
 
-        listMentions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mDrawerLayout != null) {
-                    mDrawerLayout.closeDrawer(mFragmentContainerView);
-                }
-                if (mentionCallbacks != null) {
-                    mentionCallbacks.onMentionItemSelected(position);
-                }
-            }
-        });
+//        listMentions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                if (mDrawerLayout != null) {
+//                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+//                }
+//                if (mentionCallbacks != null) {
+//                    mentionCallbacks.onMentionItemSelected(position);
+//                }
+//            }
+//        });
 
         final ScrollView sv = (ScrollView) view.findViewById(R.id.svScroll);
         ViewTreeObserver vto = sv.getViewTreeObserver();
@@ -166,15 +170,16 @@ public class NavigationDrawerFragment extends Fragment {
         mentionCallbacks = null;
     }
 
+    public void updateNavigationDrawerHashtagList(HashSet<Hashtag> hashtags){
+        hashtagItems.clear();
+        hashtagItems.addAll(hashtags);
+
+        hashtagAdapter.notifyDataSetChanged();
+    }
+
     public List<Hashtag> getHashtagList() {
         List<Hashtag> items = new ArrayList<>();
-        items.add(new Hashtag("#hashtag 0"));
-        items.add(new Hashtag("#hashtag 1"));
-        items.add(new Hashtag("#hashtag 2"));
-        items.add(new Hashtag("#hashtag 3"));
-        items.add(new Hashtag("#hashtag 3"));
-        items.add(new Hashtag("#hashtag 3"));
-        items.add(new Hashtag("#hashtag 3"));
+        items.add(new Hashtag());
         return items;
     }
 

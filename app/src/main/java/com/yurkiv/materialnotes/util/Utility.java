@@ -1,6 +1,5 @@
 package com.yurkiv.materialnotes.util;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -23,8 +22,11 @@ public class Utility {
         char prefix = '#';
         Pattern pattern = Pattern.compile(prefix + "\\w+");
         Matcher matcher = pattern.matcher(body);
+        Hashtag hashtag=null;
         while (matcher.find()) {
-            hashtags.add(new Hashtag(matcher.group()));
+            hashtag=new Hashtag();
+            hashtag.setName(matcher.group());
+            hashtags.add(hashtag);
         }
         return hashtags;
     }

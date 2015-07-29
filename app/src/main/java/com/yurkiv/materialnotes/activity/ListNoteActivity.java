@@ -3,10 +3,10 @@ package com.yurkiv.materialnotes.activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -20,11 +20,10 @@ import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.yurkiv.materialnotes.R;
-import com.yurkiv.materialnotes.data.DatabaseHelper;
+import com.yurkiv.materialnotes.adapter.NotesAdapter;
 import com.yurkiv.materialnotes.fragment.NavigationDrawerFragment;
 import com.yurkiv.materialnotes.model.Hashtag;
 import com.yurkiv.materialnotes.model.Note;
-import com.yurkiv.materialnotes.adapter.NotesAdapter;
 import com.yurkiv.materialnotes.util.HashtagCallbacks;
 import com.yurkiv.materialnotes.util.MentionCallbacks;
 import com.yurkiv.materialnotes.util.RequestResultCode;
@@ -34,6 +33,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+
+import io.realm.Realm;
 
 
 public class ListNoteActivity extends ActionBarActivity implements SearchView.OnQueryTextListener, HashtagCallbacks, MentionCallbacks {
@@ -53,14 +54,15 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
     private SearchView searchView;
     private MenuItem searchMenuItem;
 
-    private DatabaseHelper databaseHelper;
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notelist);
 
-        databaseHelper=new DatabaseHelper(getApplicationContext());
+        // Open the default realm for the UI thread.
+        realm = Realm.getInstance(this);
 
         toolbar = (Toolbar) findViewById(R.id.note_list_toolbar);
         setSupportActionBar(toolbar);
@@ -84,7 +86,7 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Note note=notesData.get(position);
                 Intent intent=new Intent(ListNoteActivity.this, ViewNoteActivity.class);
-                intent.putExtra(EXTRA_NOTE, note);
+                intent.putExtra(EXTRA_NOTE, note.getId());
                 startActivityForResult(intent, RequestResultCode.REQUEST_CODE_VIEW_NOTE);
             }
         });
@@ -93,6 +95,7 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(ListNoteActivity.this, EditNoteActivity.class);
+                intent.putExtra(EXTRA_NOTE, "");
                 startActivityForResult(intent, RequestResultCode.REQUEST_CODE_ADD_NOTE);
             }
         });
@@ -101,19 +104,23 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
 
     private void initSimpleNote(){
         for (int i = 0; i < 10; i++) {
-            Note note=new Note();
+            realm.beginTransaction();
+            Note note=realm.createObject(Note.class);
             note.setTitle("Note " + i);
             note.setContent("Content " + i);
             note.setUpdatedAt(new Date());
-            databaseHelper.createNote(note);
+            realm.commitTransaction();
         }
     }
 
     private void setupNotesAdapter(){
-        notesData=databaseHelper.getAllNotes();
+        notesData = realm.where(Note.class).findAll();
         notesAdapter=new NotesAdapter(notesData);
         listNotes.setAdapter(notesAdapter);
-        hashtags=new HashSet<>();
+
+        hashtags=new HashSet<>(realm.where(Hashtag.class).findAll());
+        navigationDrawerFragment.updateNavigationDrawerHashtagList(hashtags);
+
     }
 
     private void updateView(){
@@ -146,36 +153,24 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
     }
 
     private void addNote(Intent data){
-        Note note = (Note) data.getSerializableExtra(EXTRA_NOTE);
-        long noteId=databaseHelper.createNote(note);
-        note.setId(noteId);
-        notesData.add(note);
-        hashtags.addAll(note.getHashtags());
-
-        updateView();
-        notesAdapter.notifyDataSetChanged();
+        updateData();
     }
 
-    private void updateNote(Intent data) {
-        Note updatedNote= (Note) data.getSerializableExtra(EXTRA_NOTE);
-        databaseHelper.updateNote(updatedNote);
-        hashtags.addAll(updatedNote.getHashtags());
-        for (Note note: notesData){
-            if (note.getId().equals(updatedNote.getId())){
-                note.setTitle(updatedNote.getTitle());
-                note.setContent(updatedNote.getContent());
-                note.setUpdatedAt(updatedNote.getUpdatedAt());
-            }
-        }
+    private void updateData() {
+        notesData = realm.where(Note.class).findAll();
         notesAdapter.notifyDataSetChanged();
+        hashtags=new HashSet<>(realm.where(Hashtag.class).findAll());
+        navigationDrawerFragment.updateNavigationDrawerHashtagList(hashtags);
+        updateView();
+    }
+
+
+    private void updateNote(Intent data) {
+        updateData();
     }
 
     private void deleteNote(Intent data) {
-        Note deletedNote= (Note) data.getSerializableExtra(EXTRA_NOTE);
-        databaseHelper.deleteNote(deletedNote);
-        notesData.remove(deletedNote);
-        updateView();
-        notesAdapter.notifyDataSetChanged();
+        updateData();
         Toast.makeText(ListNoteActivity.this, "The note has been deleted.", Toast.LENGTH_LONG).show();
     }
 
@@ -189,7 +184,7 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater=getMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_note_list, menu);
         SearchManager searchManager= (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchMenuItem=menu.findItem(R.id.search_note);
@@ -235,8 +230,9 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
     }
 
     @Override
-    public void onHashtagItemSelected(int position) {
-        Toast.makeText(this, "hashtag selected -> " + position, Toast.LENGTH_SHORT).show();
+    public void onHashtagItemSelected(Hashtag hashtag) {
+//        notesData=databaseHelper.getAllNotesByHashTags(hashtag);
+        notesAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -18,17 +18,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:name="All"
             android:id="@+id/all"
             android:layout_margin="16dp"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:text="All" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/all"
             android:layout_margin="16dp"
-            android:name="HASHTAGS"
+            android:text="HASHTAGS"
             android:id="@+id/textView"
             android:textSize="16sp" />
 
@@ -51,24 +51,24 @@
             <!--android:focusableInTouchMode="true"-->
             <!--/>-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/hashtagList"
-            android:name="MENTIONS"
-            android:id="@+id/textView1"
-            android:textSize="16sp"
-            android:layout_margin="16dp" />
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/hashtagList"-->
+            <!--android:text="MENTIONS"-->
+            <!--android:id="@+id/textView1"-->
+            <!--android:textSize="16sp"-->
+            <!--android:layout_margin="16dp" />-->
 
-        <ListView
-            android:id="@+id/mentionList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView1"
-            android:clickable="true"
-            android:dividerHeight="0dp"
-            android:divider="@null">
-        </ListView>
+        <!--<ListView-->
+            <!--android:id="@+id/mentionList"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/textView1"-->
+            <!--android:clickable="true"-->
+            <!--android:dividerHeight="0dp"-->
+            <!--android:divider="@null">-->
+        <!--</ListView>-->
 
         <!--<android.support.v7.widget.RecyclerView-->
             <!--android:id="@+id/mentionList"-->
