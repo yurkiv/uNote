@@ -42,42 +42,24 @@
             android:divider="@null">
         </ListView>
 
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/hashtagList"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@+id/textView"-->
-            <!--android:clickable="true"-->
-            <!--android:focusableInTouchMode="true"-->
-            <!--/>-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/hashtagList"
+            android:text="MENTIONS"
+            android:id="@+id/textView1"
+            android:textSize="16sp"
+            android:layout_margin="16dp" />
 
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@+id/hashtagList"-->
-            <!--android:text="MENTIONS"-->
-            <!--android:id="@+id/textView1"-->
-            <!--android:textSize="16sp"-->
-            <!--android:layout_margin="16dp" />-->
-
-        <!--<ListView-->
-            <!--android:id="@+id/mentionList"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@+id/textView1"-->
-            <!--android:clickable="true"-->
-            <!--android:dividerHeight="0dp"-->
-            <!--android:divider="@null">-->
-        <!--</ListView>-->
-
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/mentionList"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@+id/textView1"-->
-            <!--android:clickable="true"-->
-            <!--android:focusableInTouchMode="true"-->
-            <!--/>-->
+        <ListView
+            android:id="@+id/mentionList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView1"
+            android:clickable="true"
+            android:dividerHeight="0dp"
+            android:divider="@null">
+        </ListView>
     </RelativeLayout>
 
 </ScrollView>

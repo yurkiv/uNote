@@ -2,34 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="88dp"
+        android:layout_height="fill_parent"
         android:gravity="center_vertical"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        android:padding="8dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New Text"
-            android:id="@+id/tvTitle"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead.Inverse" />
+            android:id="@+id/textView2"
+            android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New Text"
-            android:id="@+id/tvContent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
-            android:maxLines="2" />
+            android:id="@+id/textView3"
+            android:textAppearance="@android:style/TextAppearance.Material.Body1" />
 
     </LinearLayout>
     <View android:layout_height="1px"
         android:layout_width="fill_parent"
-        android:background="#1f000000"
+        android:background="@android:color/darker_gray"
         android:id="@+id/separator1" />
 </LinearLayout>

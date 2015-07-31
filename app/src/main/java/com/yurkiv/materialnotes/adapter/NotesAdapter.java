@@ -60,7 +60,8 @@ public class NotesAdapter extends BaseAdapter implements Filterable {
             holder= (ViewHolder) convertView.getTag();
         }
         Note note=getItem(position);
-        holder.textRow.setText(note.getContent());
+        holder.titleRow.setText(note.getTitle());
+        holder.contentRow.setText(note.getContent());
         return convertView;
     }
 
@@ -103,12 +104,14 @@ public class NotesAdapter extends BaseAdapter implements Filterable {
 
 
     private static class ViewHolder{
-        private TextView textRow;
+        private TextView titleRow;
+        private TextView contentRow;
         private View parent;
 
         private ViewHolder(View parent) {
             this.parent = parent;
-            textRow = (TextView) parent.findViewById(R.id.textRow);
+            titleRow = (TextView) parent.findViewById(R.id.tvTitle);
+            contentRow = (TextView) parent.findViewById(R.id.tvContent);
         }
     }
 

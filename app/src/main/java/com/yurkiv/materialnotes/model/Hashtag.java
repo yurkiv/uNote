@@ -20,5 +20,4 @@ public class Hashtag extends RealmObject {
         this.name = name;
     }
 
-
 }

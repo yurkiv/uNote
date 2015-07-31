@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.yurkiv.materialnotes.R;
 import com.yurkiv.materialnotes.model.Hashtag;
 import com.yurkiv.materialnotes.model.Note;
+import com.yurkiv.materialnotes.util.Constants;
 import com.yurkiv.materialnotes.util.Utility;
 
 import java.util.ArrayList;
@@ -22,11 +23,13 @@ import java.util.Date;
 import java.util.UUID;
 
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 public class EditNoteActivity extends ActionBarActivity {
 
-    private static final String EXTRA_NOTE = "EXTRA_NOTE";
-
+    private static final String TAG = EditNoteActivity.class.getSimpleName();
     private Toolbar mToolbar;
 
     private EditText editTitle;
@@ -46,15 +49,14 @@ public class EditNoteActivity extends ActionBarActivity {
         editTitle = (EditText) findViewById(R.id.editTitle);
         editContent = (EditText) findViewById(R.id.editContent);
 
-        if (!getIntent().getStringExtra(EXTRA_NOTE).isEmpty()){
-            String noteId=getIntent().getStringExtra(EXTRA_NOTE);
+        if (!getIntent().getStringExtra(Constants.EXTRA_NOTE).isEmpty()){
+            String noteId=getIntent().getStringExtra(Constants.EXTRA_NOTE);
             Realm realm = Realm.getInstance(this);
             note=realm.where(Note.class).equalTo("id",noteId).findFirst();
             editTitle.setText(note.getTitle());
             editContent.setText(note.getContent());
+            Log.i(TAG, "onCreate: " + note.toString());
         }
-
-
     }
 
     @Override
@@ -79,16 +81,6 @@ public class EditNoteActivity extends ActionBarActivity {
         }
     }
 
-    private void validateNoteForm() {
-        String msg=null;
-        if (isNullOrBlank(editTitle.getText().toString())){
-            msg=getString(R.string.title_required);
-        }
-        if (msg!=null){
-            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-        }
-    }
-
     private void setNoteResult() {
         String title=editTitle.getText().toString().trim();
         String content=editContent.getText().toString().trim();
@@ -96,8 +88,8 @@ public class EditNoteActivity extends ActionBarActivity {
 
         Realm realm = Realm.getInstance(getApplicationContext());
         realm.beginTransaction();
-        if (!getIntent().getStringExtra(EXTRA_NOTE).isEmpty()){
-            String noteId=getIntent().getStringExtra(EXTRA_NOTE);
+        if (!getIntent().getStringExtra(Constants.EXTRA_NOTE).isEmpty()){
+            String noteId=getIntent().getStringExtra(Constants.EXTRA_NOTE);
             note=realm.where(Note.class).equalTo("id",noteId).findFirst();
         } else {
             note=realm.createObject(Note.class);
@@ -107,29 +99,22 @@ public class EditNoteActivity extends ActionBarActivity {
         note.setContent(content);
         note.setUpdatedAt(new Date());
 
-        Hashtag realmHastag=null;
+        note.getHashtags().where().findAll().clear();
+
         for (Hashtag hashtag:hashtags){
-            realmHastag=realm.copyToRealm(hashtag);
-            note.getHashtags().add(realmHastag);
+            note.getHashtags().add(realm.copyToRealm(hashtag));
         }
         realm.commitTransaction();
 
-        Log.d("sf", note.getHashtags().toString());
-        Intent intent=new Intent();
-        setResult(RESULT_OK, intent);
+        Log.i(TAG, "setNoteResult: " + note.toString());
         Toast.makeText(EditNoteActivity.this, "The note has been saved.", Toast.LENGTH_LONG).show();
     }
 
-    private boolean isNoteFormOk() {
-        String title=editTitle.getText().toString();
-        return !(title==null || title.trim().length()==0);
-    }
-
-    private void onBack(){
+    @Override
+    public void onBackPressed() {
         if (isNoteFormOk()) {
             if ((editTitle.getText().toString().equals(note.getTitle()))
                     && (editContent.getText().toString().equals(note.getContent()))){
-                setResult(RESULT_CANCELED, new Intent());
                 finish();
             } else {
                 AlertDialog.Builder builder=new AlertDialog.Builder(EditNoteActivity.this);
@@ -144,7 +129,6 @@ public class EditNoteActivity extends ActionBarActivity {
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                setResult(RESULT_CANCELED, new Intent());
                                 finish();
                             }
                         })
@@ -153,17 +137,26 @@ public class EditNoteActivity extends ActionBarActivity {
                 alertDialog.show();
             }
         } else {
-            setResult(RESULT_CANCELED, new Intent());
             finish();
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        onBack();
+    private void validateNoteForm() {
+        String msg=null;
+        if (isNullOrBlank(editTitle.getText().toString())){
+            msg=getString(R.string.title_required);
+        }
+        if (msg!=null){
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+        }
     }
 
     public static boolean isNullOrBlank(String str) {
         return str == null || str.trim().length() == 0;
+    }
+
+    private boolean isNoteFormOk() {
+        String title=editTitle.getText().toString();
+        return !(title==null || title.trim().length()==0);
     }
 }

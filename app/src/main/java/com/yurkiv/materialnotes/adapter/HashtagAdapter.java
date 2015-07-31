@@ -25,7 +25,7 @@ public class HashtagAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return hashtags != null ? hashtags.size() : 0;
+        return hashtags.size();
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,18 +27,18 @@ import com.yurkiv.materialnotes.util.MentionCallbacks;
 import com.yurkiv.materialnotes.util.Utility;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 /**
  * Created by Yurkiv on 18/02/2015.
  */
 public class NavigationDrawerFragment extends Fragment {
+    private static final String TAG = NavigationDrawerFragment.class.getSimpleName();
     private HashtagCallbacks hashtagCallbacks;
     private MentionCallbacks mentionCallbacks;
 
     private ListView listHashtags;
-//    private ListView listMentions;
+    private ListView listMentions;
 
     private List<Hashtag> hashtagItems;
     private List<Mention> mentionItems;
@@ -55,15 +56,15 @@ public class NavigationDrawerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
 
         listHashtags = (ListView) view.findViewById(R.id.hashtagList);
-//        listMentions = (ListView) view.findViewById(R.id.mentionList);
+        listMentions = (ListView) view.findViewById(R.id.mentionList);
         hashtagItems = getHashtagList();
         mentionItems = getMentionsList();
         hashtagAdapter = new HashtagAdapter(hashtagItems);
         mentionAdapter = new MentionAdapter(mentionItems);
         listHashtags.setAdapter(hashtagAdapter);
-//        listMentions.setAdapter(mentionAdapter);
+        listMentions.setAdapter(mentionAdapter);
         Utility.setListViewHeightBasedOnChildren(listHashtags);
-//        Utility.setListViewHeightBasedOnChildren(listMentions);
+        Utility.setListViewHeightBasedOnChildren(listMentions);
 
         listHashtags.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -170,16 +171,22 @@ public class NavigationDrawerFragment extends Fragment {
         mentionCallbacks = null;
     }
 
-    public void updateNavigationDrawerHashtagList(HashSet<Hashtag> hashtags){
+    public void updateNavigationDrawerHashtagList(List<Hashtag> hashtags){
         hashtagItems.clear();
         hashtagItems.addAll(hashtags);
-
+        Log.i(TAG, hashtagItems.toString());
         hashtagAdapter.notifyDataSetChanged();
+        Utility.setListViewHeightBasedOnChildren(listHashtags);
+
     }
 
     public List<Hashtag> getHashtagList() {
         List<Hashtag> items = new ArrayList<>();
-        items.add(new Hashtag());
+        items.add(new Hashtag("#hash1"));
+//        items.add(new Hashtag("#hash2"));
+//        items.add(new Hashtag("#hash3"));
+//        items.add(new Hashtag("#hash4"));
+//        items.add(new Hashtag("#hash5"));
         return items;
     }
 

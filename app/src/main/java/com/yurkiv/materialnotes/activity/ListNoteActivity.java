@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,7 +27,7 @@ import com.yurkiv.materialnotes.model.Hashtag;
 import com.yurkiv.materialnotes.model.Note;
 import com.yurkiv.materialnotes.util.HashtagCallbacks;
 import com.yurkiv.materialnotes.util.MentionCallbacks;
-import com.yurkiv.materialnotes.util.RequestResultCode;
+import com.yurkiv.materialnotes.util.Constants;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,9 +40,7 @@ import io.realm.Realm;
 
 public class ListNoteActivity extends ActionBarActivity implements SearchView.OnQueryTextListener, HashtagCallbacks, MentionCallbacks {
 
-    private static final String EXTRA_NOTE = "EXTRA_NOTE";
-    private static final int VIEW_NOTE_RESULT_CODE = 5;
-
+    private static final String TAG = ListNoteActivity.class.getSimpleName();
     private Toolbar toolbar;
     private NavigationDrawerFragment navigationDrawerFragment;
 
@@ -49,7 +48,7 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
     private ListView listNotes;
 
     private List<Note> notesData;
-    private HashSet<Hashtag> hashtags;
+    private List<Hashtag> hashtags;
     private NotesAdapter notesAdapter;
     private SearchView searchView;
     private MenuItem searchMenuItem;
@@ -86,8 +85,8 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Note note=notesData.get(position);
                 Intent intent=new Intent(ListNoteActivity.this, ViewNoteActivity.class);
-                intent.putExtra(EXTRA_NOTE, note.getId());
-                startActivityForResult(intent, RequestResultCode.REQUEST_CODE_VIEW_NOTE);
+                intent.putExtra(Constants.EXTRA_NOTE, note.getId());
+                startActivity(intent);
             }
         });
 
@@ -95,11 +94,17 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(ListNoteActivity.this, EditNoteActivity.class);
-                intent.putExtra(EXTRA_NOTE, "");
-                startActivityForResult(intent, RequestResultCode.REQUEST_CODE_ADD_NOTE);
+                intent.putExtra(Constants.EXTRA_NOTE, "");
+                startActivity(intent);
             }
         });
 
+    }
+
+    @Override
+    protected void onRestart() {
+        updateData();
+        super.onRestart();
     }
 
     private void initSimpleNote(){
@@ -118,7 +123,7 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
         notesAdapter=new NotesAdapter(notesData);
         listNotes.setAdapter(notesAdapter);
 
-        hashtags=new HashSet<>(realm.where(Hashtag.class).findAll());
+        hashtags=realm.where(Hashtag.class).findAll();
         navigationDrawerFragment.updateNavigationDrawerHashtagList(hashtags);
 
     }
@@ -133,47 +138,16 @@ public class ListNoteActivity extends ActionBarActivity implements SearchView.On
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode==RequestResultCode.REQUEST_CODE_VIEW_NOTE){
-            if (resultCode==RESULT_OK){
-
-            } else if (resultCode==RequestResultCode.RESULT_CODE_DELETE_NOTE){
-                deleteNote(data);
-            } else if (resultCode==RequestResultCode.RESULT_CODE_EDIT_NOTE){
-                updateNote(data);
-            }
-        }
-        if (requestCode==RequestResultCode.REQUEST_CODE_ADD_NOTE){
-            if (resultCode==RESULT_OK){
-                addNote(data);
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void addNote(Intent data){
-        updateData();
-    }
-
     private void updateData() {
         notesData = realm.where(Note.class).findAll();
+        Log.i(TAG, notesData.toString());
         notesAdapter.notifyDataSetChanged();
-        hashtags=new HashSet<>(realm.where(Hashtag.class).findAll());
+        //TODO: Only unique
+        hashtags=realm.where(Hashtag.class).findAll();
+        Log.i(TAG, hashtags.toString());
         navigationDrawerFragment.updateNavigationDrawerHashtagList(hashtags);
         updateView();
     }
-
-
-    private void updateNote(Intent data) {
-        updateData();
-    }
-
-    private void deleteNote(Intent data) {
-        updateData();
-        Toast.makeText(ListNoteActivity.this, "The note has been deleted.", Toast.LENGTH_LONG).show();
-    }
-
 
     private void sortList(MenuItem item, Comparator<Note> noteComparator) {
         Collections.sort(notesData, noteComparator);

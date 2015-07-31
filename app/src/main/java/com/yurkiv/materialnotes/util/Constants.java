@@ -3,7 +3,9 @@ package com.yurkiv.materialnotes.util;
 /**
  * Created by yurkiv on 02.02.2015.
  */
-public class RequestResultCode {
+public class Constants {
+    public static final String EXTRA_NOTE = "EXTRA_NOTE";
+
     public static final int REQUEST_CODE_VIEW_NOTE=1;
     public static final int REQUEST_CODE_EDIT_NOTE=2;
     public static final int REQUEST_CODE_UPDATE_NOTE=3;
