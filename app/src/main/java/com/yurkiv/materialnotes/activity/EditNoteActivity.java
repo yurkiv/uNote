@@ -2,7 +2,7 @@ package com.yurkiv.materialnotes.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.yurkiv.materialnotes.R;
+import com.yurkiv.materialnotes.colorpicker.ColorPickerDialog;
+import com.yurkiv.materialnotes.colorpicker.ColorPickerSwatch;
 import com.yurkiv.materialnotes.model.Hashtag;
 import com.yurkiv.materialnotes.model.Note;
 import com.yurkiv.materialnotes.util.Constants;
@@ -23,9 +25,6 @@ import java.util.Date;
 import java.util.UUID;
 
 import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 
 public class EditNoteActivity extends ActionBarActivity {
 
@@ -36,6 +35,7 @@ public class EditNoteActivity extends ActionBarActivity {
     private EditText editContent;
 
     private Note note;
+    private int selectedColor =Color.GRAY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +55,7 @@ public class EditNoteActivity extends ActionBarActivity {
             note=realm.where(Note.class).equalTo("id",noteId).findFirst();
             editTitle.setText(note.getTitle());
             editContent.setText(note.getContent());
+            selectedColor=note.getColor();
             Log.i(TAG, "onCreate: " + note.toString());
         }
     }
@@ -77,8 +78,32 @@ public class EditNoteActivity extends ActionBarActivity {
                     finish();
                 } else validateNoteForm();
                 return true;
+            case R.id.color_note:
+                setColor();
+                return true;
             default: return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void setColor() {
+        ColorPickerDialog colorcalendar = ColorPickerDialog.newInstance(
+                R.string.color_picker_default_title,
+                com.yurkiv.materialnotes.util.Utils.ColorUtils.colorChoice(this),
+                selectedColor,
+                5,
+                com.yurkiv.materialnotes.util.Utils.isTablet(this)? ColorPickerDialog.SIZE_LARGE : ColorPickerDialog.SIZE_SMALL);
+
+        //Implement listener to get selected color value
+        colorcalendar.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener(){
+
+            @Override
+            public void onColorSelected(int color) {
+                selectedColor =color;
+            }
+
+        });
+
+        colorcalendar.show(getFragmentManager(),"cal");
     }
 
     private void setNoteResult() {
@@ -98,6 +123,7 @@ public class EditNoteActivity extends ActionBarActivity {
         note.setTitle(title);
         note.setContent(content);
         note.setUpdatedAt(new Date());
+        note.setColor(selectedColor);
 
         note.getHashtags().where().findAll().clear();
 

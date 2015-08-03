@@ -30,5 +30,11 @@
     <string name="drawer_close">Menu closed</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_item_detail">ItemDetailActivity</string>
+    <string name="color_picker_default_title">Select a Color</string>
+    <!-- Content description for a color square. -->
+    <string name="color_swatch_description">Color </string>
+    <!-- Content description for a selected color square. -->
+    <string name="color_swatch_description_selected">Color selected</string>
+    <string name="color_note">Color Note</string>
 
 </resources>

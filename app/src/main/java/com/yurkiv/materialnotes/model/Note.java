@@ -18,6 +18,8 @@ public class Note extends RealmObject {
 
     private Date updatedAt;
 
+    private int color;
+
     private RealmList<Hashtag> hashtags;
 
     public Note(String title) {
@@ -67,4 +69,11 @@ public class Note extends RealmObject {
         this.hashtags = hashtags;
     }
 
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
 }

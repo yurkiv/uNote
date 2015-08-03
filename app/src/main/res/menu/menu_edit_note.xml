@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.yurkiv.materialnotes.activity.EditNoteActivity">
 
+    <item android:id="@+id/color_note"
+        android:icon="@drawable/ic_color"
+        android:title="@string/color_note"
+        app:showAsAction="always" />
+
     <item android:id="@+id/save_note"
         android:icon="@drawable/ic_save"
         android:title="@string/save_note"

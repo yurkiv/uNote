@@ -1,5 +1,6 @@
 package com.yurkiv.materialnotes.adapter;
 
+import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yurkiv.materialnotes.R;
@@ -62,6 +64,8 @@ public class NotesAdapter extends BaseAdapter implements Filterable {
         Note note=getItem(position);
         holder.titleRow.setText(note.getTitle());
         holder.contentRow.setText(note.getContent());
+        GradientDrawable bgShape = (GradientDrawable)holder.ivIcon.getBackground();
+        bgShape.setColor(note.getColor());
         return convertView;
     }
 
@@ -106,12 +110,12 @@ public class NotesAdapter extends BaseAdapter implements Filterable {
     private static class ViewHolder{
         private TextView titleRow;
         private TextView contentRow;
-        private View parent;
+        private ImageView ivIcon;
 
         private ViewHolder(View parent) {
-            this.parent = parent;
             titleRow = (TextView) parent.findViewById(R.id.tvTitle);
             contentRow = (TextView) parent.findViewById(R.id.tvContent);
+            ivIcon = (ImageView) parent.findViewById(R.id.ivNoteIcon);
         }
     }
 
