@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yurkiv.materialnotes.activity.ViewNoteActivity">
+    tools:context="com.yurkiv.unote.activity.ViewNoteActivity">
 
     <include
         android:id="@+id/view_note_toolbar"
@@ -32,14 +32,15 @@
                     android:layout_height="wrap_content"
                     android:name="Note Title"
                     android:id="@+id/textTitle"
-                    android:textSize="24sp" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:text="Text" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:name="LastUpdated"
                     android:id="@+id/textUpdated"
-                    android:textColor="@color/update_text_color" />
+                    android:text="Text" />
             </LinearLayout>
 
             <TextView
@@ -47,8 +48,9 @@
                 android:layout_height="match_parent"
                 android:name="@string/big_text"
                 android:id="@+id/textContent"
-                android:textSize="18sp"
-                android:padding="16dp" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:padding="16dp"
+                android:text="Text" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

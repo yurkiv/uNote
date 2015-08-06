@@ -5,8 +5,8 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.yurkiv.materialnotes"
-        minSdkVersion 11
+        applicationId "com.yurkiv.unote"
+        minSdkVersion 14
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -17,23 +17,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-}
 
-repositories {
-    maven {
-        url "https://repo.commonsware.com.s3.amazonaws.com"
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.android.support:design:22.2.1'
+
     compile 'com.melnykov:floatingactionbutton:1.1.0'
-
-//    compile 'org.parceler:parceler-api:1.0.3'
-//    provided 'org.parceler:parceler:1.0.3'
-
     compile 'io.realm:realm-android:0.82.0'
-
+    compile 'com.jakewharton:butterknife:6.1.0'
 }

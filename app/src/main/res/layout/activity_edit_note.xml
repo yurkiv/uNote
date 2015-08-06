@@ -1,39 +1,59 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yurkiv.materialnotes.activity.EditNoteActivity">
+    tools:context="com.yurkiv.unote.activity.EditNoteActivity">
 
     <include
-        android:id="@+id/edit_note_toolbar"
+        android:id="@+id/toolbarEditNote"
         layout="@layout/toolbar_default"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <LinearLayout
+        android:id="@+id/llEditNote"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/edit_note_toolbar"
+        android:layout_below="@+id/toolbarEditNote"
         android:padding="16dp">
 
-        <EditText
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editTitle"
-            android:textSize="24sp"
-            android:singleLine="true"
-            android:hint="Title"
-            android:textColor="@color/edit_text_color" />
+            android:id="@+id/inputTitle"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            >
 
-        <EditText
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTitle"
+                android:textSize="24sp"
+                android:singleLine="true"
+                android:hint="Title"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/editContent"
+            android:layout_height="wrap_content"
+            android:id="@+id/inputContent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginTop="16dp"
             android:gravity="start"
-            android:inputType="textMultiLine"
-            android:hint="Tap here to create a note"
-            android:nextFocusDown="@id/editTitle"
-            android:textColor="@color/edit_text_color" />
+            >
+
+            <EditText
+                android:id="@+id/editContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Note text"
+                android:inputType="textMultiLine"
+                android:nextFocusDown="@id/editTitle"/>
+
+        </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 </RelativeLayout>

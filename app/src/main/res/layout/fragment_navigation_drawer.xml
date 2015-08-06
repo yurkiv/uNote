@@ -8,7 +8,7 @@
     android:scrollbars="vertical"
     android:focusable="true"
     android:fitsSystemWindows="true"
-    android:background="@color/myDrawerBackground"
+    android:background="@color/drawer_background"
     android:measureAllChildren="false">
 
     <RelativeLayout
@@ -16,17 +16,18 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/all"
-            android:layout_margin="16dp"
+            android:id="@+id/tvAllNotes"
             android:textSize="20sp"
-            android:text="All" />
+            android:text="All"
+            android:clickable="true"
+            android:padding="16dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/all"
+            android:layout_below="@+id/tvAllNotes"
             android:layout_margin="16dp"
             android:text="HASHTAGS"
             android:id="@+id/textView"

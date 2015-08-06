@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yurkiv.materialnotes.activity.ListNoteActivity" >
+    tools:context="com.yurkiv.unote.activity.ListNoteActivity" >
 
     <include
         android:id="@+id/note_list_toolbar"
@@ -23,30 +23,29 @@
         <RelativeLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:clickable="true"
             android:layout_height="match_parent">
 
-            <ListView
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/listNotes"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="@android:color/transparent" />
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:name="@string/no_notes"
+                android:text="@string/no_notes"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/textEmpty" />
+                android:id="@+id/textEmpty"/>
 
             <com.melnykov.fab.FloatingActionButton
                 android:id="@+id/fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|right"
-                android:layout_margin="16dp"
+                android:layout_margin="@dimen/fab_margin"
                 android:src="@drawable/ic_add"
                 app:fab_colorNormal="@color/accent"
                 app:fab_colorPressed="@color/accent_dark"
@@ -57,10 +56,9 @@
 
         </RelativeLayout>
 
-        <!-- android:layout_marginTop="?android:attr/actionBarSize"-->
         <fragment
             android:id="@+id/fragment_drawer"
-            android:name="com.yurkiv.materialnotes.fragment.NavigationDrawerFragment"
+            android:name="com.yurkiv.unote.fragment.NavigationDrawerFragment"
             android:layout_width="@dimen/navigation_drawer_width"
             android:layout_height="match_parent"
             android:layout_gravity="start"

@@ -32,15 +32,15 @@
                 android:layout_height="wrap_content"
                 android:text="New Text"
                 android:id="@+id/tvTitle"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead.Inverse" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text"
                 android:id="@+id/tvContent"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
-                android:maxLines="2" />
+                android:maxLines="2"/>
 
         </LinearLayout>
     </LinearLayout>
