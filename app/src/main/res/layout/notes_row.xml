@@ -5,41 +5,76 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="88dp"
-        android:gravity="center_vertical"
-        android:layout_marginLeft="16dp">
-
-        <ImageView
-            android:id="@+id/ivNoteIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_share"
-            android:background="@drawable/circle"
-            android:padding="8dp" />
-
+        android:gravity="center_vertical">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Text"
-                android:id="@+id/tvTitle"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+            <LinearLayout
+                android:id="@+id/llNoteIcon"
+                android:orientation="vertical"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:background="@drawable/circle"
+                android:layout_marginTop="4dp">
 
-            <TextView
+                <TextView
+                    android:id="@+id/tvNoteIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:text="A"
+                    android:gravity="center"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text"
-                android:id="@+id/tvContent"
-                android:maxLines="2"/>
+                android:layout_marginLeft="16dp">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New TextNew TextNew TextNew TextNew TextNew TextNew Text"
+                        android:id="@+id/tvTitle"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:layout_weight="1"
+                        android:maxLines="1"
+                        android:layout_marginRight="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                        android:text="Text"
+                        android:id="@+id/tvDateItem" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text New Text"
+                    android:id="@+id/tvContent"
+                    android:maxLines="2"/>
+
+            </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>

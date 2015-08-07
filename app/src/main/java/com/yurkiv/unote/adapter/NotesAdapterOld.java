@@ -115,7 +115,6 @@ public class NotesAdapterOld extends BaseAdapter implements Filterable {
         private ViewHolder(View parent) {
             titleRow = (TextView) parent.findViewById(R.id.tvTitle);
             contentRow = (TextView) parent.findViewById(R.id.tvContent);
-            ivIcon = (ImageView) parent.findViewById(R.id.ivNoteIcon);
         }
     }
 

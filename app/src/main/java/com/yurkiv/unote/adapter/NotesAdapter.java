@@ -7,13 +7,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yurkiv.unote.R;
 import com.yurkiv.unote.model.Note;
 import com.yurkiv.unote.util.Utility;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -22,6 +24,8 @@ import java.util.List;
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
 
     private static String TAG=NotesAdapter.class.getSimpleName();
+
+    private static SimpleDateFormat dateFormat=new SimpleDateFormat("dd MMM");
     private List<Note> noteList;
     private Context context;
     private static OnItemClickListener onItemClickListener;
@@ -48,10 +52,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         Note note=noteList.get(position);
 
-
         holder.titleRow.setText(Utility.styleText(note.getTitle()));
         holder.contentRow.setText(Utility.styleText(note.getContent()));
-        GradientDrawable bgShape = (GradientDrawable)holder.ivIcon.getBackground();
+        holder.tvDate.setText(dateFormat.format(note.getUpdatedAt()));
+        holder.tvIcon.setText(note.getTitle().substring(0,1).toUpperCase());
+        GradientDrawable bgShape = (GradientDrawable)holder.llIcon.getBackground();
         bgShape.setColor(note.getColor());
     }
 
@@ -64,13 +69,17 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
         private TextView titleRow;
         private TextView contentRow;
-        private ImageView ivIcon;
+        private TextView tvDate;
+        private TextView tvIcon;
+        private LinearLayout llIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
             titleRow = (TextView) itemView.findViewById(R.id.tvTitle);
             contentRow = (TextView) itemView.findViewById(R.id.tvContent);
-            ivIcon = (ImageView) itemView.findViewById(R.id.ivNoteIcon);
+            tvIcon = (TextView) itemView.findViewById(R.id.tvNoteIcon);
+            tvDate = (TextView) itemView.findViewById(R.id.tvDateItem);
+            llIcon = (LinearLayout) itemView.findViewById(R.id.llNoteIcon);
             itemView.setOnClickListener(this);
         }
 
