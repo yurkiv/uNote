@@ -1,13 +1,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yurkiv.unote.activity.ViewNoteActivity">
+    android:id="@+id/rootview"
+    tools:context="com.yurkiv.unote.activity.ViewNoteActivity"
+    android:background="@android:color/white">
 
-    <include
-        android:id="@+id/view_note_toolbar"
-        layout="@layout/toolbar_default"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,12 +13,23 @@
         android:id="@+id/scrollView"
         android:layout_below="@+id/view_note_toolbar">
 
-        <LinearLayout
+        <RelativeLayout
             android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="@string/big_text"
+                android:id="@+id/textContent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:padding="16dp"
+                android:text="Text"
+                android:layout_below="@+id/llTitle" />
 
             <LinearLayout
+                android:id="@+id/llTitle"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -42,15 +51,12 @@
                     android:id="@+id/textUpdated"
                     android:text="Text" />
             </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:name="@string/big_text"
-                android:id="@+id/textContent"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:padding="16dp"
-                android:text="Text" />
-        </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
+
+    <include
+        android:id="@+id/view_note_toolbar"
+        layout="@layout/toolbar_default"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

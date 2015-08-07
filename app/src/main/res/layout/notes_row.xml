@@ -32,8 +32,7 @@
                 android:layout_height="wrap_content"
                 android:text="New Text"
                 android:id="@+id/tvTitle"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textSize="16sp" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
             <TextView
                 android:layout_width="match_parent"

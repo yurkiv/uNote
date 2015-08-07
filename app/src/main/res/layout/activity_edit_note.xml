@@ -3,6 +3,11 @@
     android:layout_height="match_parent"
     tools:context="com.yurkiv.unote.activity.EditNoteActivity">
 
+    <com.yurkiv.unote.view.RevealBackgroundView
+        android:id="@+id/revealBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <include
         android:id="@+id/toolbarEditNote"
         layout="@layout/toolbar_default"

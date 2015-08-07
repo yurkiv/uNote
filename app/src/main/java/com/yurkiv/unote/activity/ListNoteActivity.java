@@ -29,11 +29,15 @@ import com.yurkiv.unote.model.Hashtag;
 import com.yurkiv.unote.model.Mention;
 import com.yurkiv.unote.model.Note;
 import com.yurkiv.unote.util.Constants;
+import com.yurkiv.unote.util.Utility;
+import com.yurkiv.unote.util.Utils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -73,30 +77,53 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         rvNotes.setLayoutManager(mLayoutManager);
         fab.attachToRecyclerView(rvNotes);
-
-        //initSimpleNote();
+//        firstRunInit();
         setupNotesAdapter();
         updateView();
+        startIntroAnimation();
 
         notesAdapter.setOnItemClickListener(new NotesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Note note=notesData.get(position);
+                int[] startingLocation = new int[2];
+                v.getLocationOnScreen(startingLocation);
+
                 Intent intent=new Intent(ListNoteActivity.this, ViewNoteActivity.class);
                 intent.putExtra(Constants.EXTRA_NOTE, note.getId());
+                intent.putExtra(Constants.EXTRA_DRAWING_START_LOCATION, startingLocation[1]);
                 startActivity(intent);
+                overridePendingTransition(0, 0);
             }
         });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int[] startingLocation = new int[2];
+                v.getLocationOnScreen(startingLocation);
+                startingLocation[0] += v.getWidth() / 2;
+
                 Intent intent=new Intent(ListNoteActivity.this, EditNoteActivity.class);
                 intent.putExtra(Constants.EXTRA_NOTE, "");
+                intent.putExtra(Constants.EXTRA_REVEAL_START_LOCATION, startingLocation);
                 startActivity(intent);
+                overridePendingTransition(0, 0);
             }
         });
 
+    }
+
+    private void startIntroAnimation(){
+        int actionbarSize = Utils.getActionBarSize(this);
+        toolbar.setTranslationY(-actionbarSize);
+        int height = Utils.getScreenHeight(this);
+        rvNotes.setTranslationY(height);
+        fab.setTranslationY(height);
+
+        toolbar.animate().translationY(0).setStartDelay(300).setDuration(300).start();
+        rvNotes.animate().translationY(0).setStartDelay(300).setDuration(600).start();
+        fab.animate().translationY(0).setStartDelay(600).setDuration(600).start();
     }
 
     @Override
@@ -105,16 +132,41 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
         super.onRestart();
     }
 
-    private void initSimpleNote(){
-        for (int i = 0; i < 10; i++) {
-            Realm realm = Realm.getInstance(this);
-            realm.beginTransaction();
-            Note note=realm.createObject(Note.class);
-            note.setTitle("Note " + i);
-            note.setContent("Content " + i);
-            note.setUpdatedAt(new Date());
-            realm.commitTransaction();
+    private void firstRunInit(){
+        initSimpleNote("Inline #hashtag",
+                "Use #hashtag and @mentions anywhere in your #notes. " +
+                        "uNote automatically indexes and groups them together in the sidebar for quick access.");
+
+        initSimpleNote("#Search",
+                "In case you forgot to #hashtag or @mentions, we also have Full-Text search that " +
+                        "support all languages right from the start.");
+
+        initSimpleNote("#Sync with Drive",
+                "All your #notes, everywhere you go.");
+    }
+
+    private void initSimpleNote(String title, String content){
+        Realm realm = Realm.getInstance(this);
+        realm.beginTransaction();
+        Note note=realm.createObject(Note.class);
+        note.setId(UUID.randomUUID().toString());
+        note.setTitle(title);
+        note.setContent(content);
+        note.setUpdatedAt(new Date());
+        note.setColor(getResources().getColor(R.color.accent_light));
+        ArrayList<Hashtag> hashtags=Utility
+                .getHashtagsFromContent(note.getTitle() + " " + note.getContent());
+        ArrayList<Mention> mentions=Utility
+                .getMentionsFromContent(note.getTitle() + " " + note.getContent());
+        note.getHashtags().where().findAll().clear();
+        for (Hashtag hashtag:hashtags){
+            note.getHashtags().add(realm.copyToRealm(hashtag));
         }
+        note.getMentions().where().findAll().clear();
+        for (Mention mention:mentions){
+            note.getMentions().add(realm.copyToRealm(mention));
+        }
+        realm.commitTransaction();
     }
 
     private void setupNotesAdapter(){

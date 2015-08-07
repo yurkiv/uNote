@@ -4,7 +4,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
@@ -21,10 +21,13 @@
                 android:resource="@xml/searchable" >
             </meta-data>
         </activity>
-        <activity android:name="com.yurkiv.unote.activity.ViewNoteActivity" >
+        <activity
+            android:name="com.yurkiv.unote.activity.ViewNoteActivity"
+            android:theme="@style/AppTheme.TransparentActivity">
         </activity>
         <activity
-            android:name="com.yurkiv.unote.activity.EditNoteActivity">
+            android:name="com.yurkiv.unote.activity.EditNoteActivity"
+            android:theme="@style/AppTheme.TransparentActivity">
         </activity>
 
     </application>

@@ -3,6 +3,7 @@ package com.yurkiv.unote.adapter;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.yurkiv.unote.R;
 import com.yurkiv.unote.model.Note;
+import com.yurkiv.unote.util.Utility;
 
 import java.util.List;
 
@@ -45,8 +47,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Note note=noteList.get(position);
-        holder.titleRow.setText(note.getTitle());
-        holder.contentRow.setText(note.getContent());
+
+
+        holder.titleRow.setText(Utility.styleText(note.getTitle()));
+        holder.contentRow.setText(Utility.styleText(note.getContent()));
         GradientDrawable bgShape = (GradientDrawable)holder.ivIcon.getBackground();
         bgShape.setColor(note.getColor());
     }

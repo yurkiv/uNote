@@ -1,5 +1,8 @@
 package com.yurkiv.unote.util;
 
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -9,6 +12,7 @@ import com.yurkiv.unote.model.Hashtag;
 import com.yurkiv.unote.model.Mention;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,11 +21,25 @@ import java.util.regex.Pattern;
  */
 public class Utility {
 
+    private static Pattern patternHashtags = Pattern.compile("(#\\w+)");
+    private static Pattern patternMentions = Pattern.compile("(@\\w+)");
+
+    public static SpannableString styleText(String s) {
+        SpannableString hashText = new SpannableString(s);
+        Matcher matcher = patternHashtags.matcher(hashText);
+        while (matcher.find()){
+            hashText.setSpan(new ForegroundColorSpan(Color.parseColor("#FF5722")), matcher.start(), matcher.end(), 0);
+        }
+        matcher = patternMentions.matcher(hashText);
+        while (matcher.find()){
+            hashText.setSpan(new ForegroundColorSpan(Color.parseColor("#FF5722")), matcher.start(), matcher.end(), 0);
+        }
+        return hashText;
+    }
+
     public static ArrayList<Hashtag> getHashtagsFromContent(String body){
         ArrayList<Hashtag> hashtags=new ArrayList<>();
-        char prefix = '#';
-        Pattern pattern = Pattern.compile(prefix + "\\w+");
-        Matcher matcher = pattern.matcher(body);
+        Matcher matcher = patternHashtags.matcher(body);
         Hashtag hashtag=null;
         while (matcher.find()) {
             hashtag=new Hashtag();
@@ -33,32 +51,14 @@ public class Utility {
 
     public static ArrayList<Mention> getMentionsFromContent(String body){
         ArrayList<Mention> mentions=new ArrayList<>();
-        char prefix = '@';
-        Pattern pattern = Pattern.compile(prefix + "\\w+");
-        Matcher matcher = pattern.matcher(body);
+        Matcher matcher = patternMentions.matcher(body);
         while (matcher.find()) {
             mentions.add(new Mention(matcher.group()));
         }
         return mentions;
     }
 
-    public ArrayList<String> getSpans(String body, char prefix) {
-        ArrayList<String> spans = new ArrayList<>();
 
-        Pattern pattern = Pattern.compile(prefix + "\\w+");
-        Matcher matcher = pattern.matcher(body);
-
-        // Check all occurrences
-        while (matcher.find()) {
-//            int[] currentSpan = new int[2];
-//            currentSpan[0] = matcher.start();
-//            currentSpan[1] = matcher.end();
-
-            spans.add(matcher.group());
-        }
-
-        return  spans;
-    }
 
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();

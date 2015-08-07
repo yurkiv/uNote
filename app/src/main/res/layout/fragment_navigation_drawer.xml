@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/svScroll"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -15,19 +16,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/ripple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tvAllNotes"
-            android:textSize="20sp"
-            android:text="All"
-            android:clickable="true"
-            android:padding="16dp" />
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleColor="#585858"
+            app:mrl_rippleHover="true"
+            app:mrl_rippleOverlay="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvAllNotes"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:text="All"
+                android:clickable="true"
+                android:padding="16dp"
+                android:focusable="false" />
+
+        </com.balysv.materialripple.MaterialRippleLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvAllNotes"
+            android:layout_below="@+id/ripple"
             android:layout_margin="16dp"
             android:text="HASHTAGS"
             android:id="@+id/textView"

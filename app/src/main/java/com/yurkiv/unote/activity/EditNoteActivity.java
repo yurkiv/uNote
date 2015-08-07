@@ -10,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -23,6 +25,7 @@ import com.yurkiv.unote.model.Note;
 import com.yurkiv.unote.util.Constants;
 import com.yurkiv.unote.util.Utility;
 import com.yurkiv.unote.util.Utils;
+import com.yurkiv.unote.view.RevealBackgroundView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.realm.Realm;
 
-public class EditNoteActivity extends AppCompatActivity {
+public class EditNoteActivity extends AppCompatActivity implements RevealBackgroundView.OnStateChangeListener  {
 
     private static final String TAG = EditNoteActivity.class.getSimpleName();
 
@@ -41,6 +44,7 @@ public class EditNoteActivity extends AppCompatActivity {
     @InjectView(R.id.editTitle) protected EditText editTitle;
     @InjectView(R.id.editContent) protected EditText editContent;
     @InjectView(R.id.inputTitle) protected TextInputLayout inputTitle;
+    @InjectView(R.id.revealBackground) protected RevealBackgroundView vRevealBackground;
 
     private Note note;
     private int selectedColor=Color.GRAY;
@@ -69,21 +73,40 @@ public class EditNoteActivity extends AppCompatActivity {
             selectedColor=note.getColor();
             Log.i(TAG, "onCreate: " + note.toString());
         }
-        startIntroAnimation();
+        setupRevealBackground(savedInstanceState);
+    }
+
+    private void setupRevealBackground(Bundle savedInstanceState) {
+        vRevealBackground.setOnStateChangeListener(this);
+        if (savedInstanceState == null) {
+            final int[] startingLocation = getIntent().getIntArrayExtra(Constants.EXTRA_REVEAL_START_LOCATION);
+            vRevealBackground.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    vRevealBackground.getViewTreeObserver().removeOnPreDrawListener(this);
+                    vRevealBackground.startFromLocation(startingLocation);
+                    return true;
+                }
+            });
+        } else {
+            vRevealBackground.setToFinishedFrame();
+        }
+    }
+
+    @Override
+    public void onStateChange(int state) {
+        if (RevealBackgroundView.STATE_FINISHED == state) {
+            llEditNote.setVisibility(View.VISIBLE);
+            startIntroAnimation();
+        } else {
+            llEditNote.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void startIntroAnimation(){
-        toolbar.animate()
-                .translationY(0)
-                .setStartDelay(300)
-                .setDuration(300)
-                .start();
 
-        llEditNote.animate()
-                .translationY(0)
-                .setStartDelay(300)
-                .setDuration(600)
-                .start();
+        toolbar.animate().translationY(0).setStartDelay(300).setDuration(300).start();
+        llEditNote.animate().translationY(0).setStartDelay(300).setDuration(600).start();
     }
 
     @Override
