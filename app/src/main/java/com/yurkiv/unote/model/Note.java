@@ -80,4 +80,5 @@ public class Note extends RealmObject {
     public void setMentions(RealmList<Mention> mentions) {
         this.mentions = mentions;
     }
+
 }

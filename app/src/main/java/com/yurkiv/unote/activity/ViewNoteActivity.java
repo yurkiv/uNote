@@ -150,7 +150,7 @@ public class ViewNoteActivity extends AppCompatActivity {
         startingLocation[1] += toolbar.getHeight()/2;
 
         Intent intent=new Intent(ViewNoteActivity.this, EditNoteActivity.class);
-        intent.putExtra(Constants.EXTRA_NOTE, "");
+        intent.putExtra(Constants.EXTRA_NOTE, note.getId());
         intent.putExtra(Constants.EXTRA_REVEAL_START_LOCATION, startingLocation);
         startActivity(intent);
         overridePendingTransition(0, 0);

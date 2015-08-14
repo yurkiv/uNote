@@ -17,26 +17,11 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp">
 
-            <LinearLayout
-                android:id="@+id/llNoteIcon"
-                android:orientation="vertical"
+            <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:gravity="center"
-                android:background="@drawable/circle"
-                android:layout_marginTop="4dp">
-
-                <TextView
-                    android:id="@+id/tvNoteIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:text="A"
-                    android:gravity="center"
-                    android:layout_gravity="center" />
-            </LinearLayout>
-
+                android:id="@+id/ivNoteIcon"
+                android:layout_marginTop="4dp"/>
 
             <LinearLayout
                 android:orientation="vertical"

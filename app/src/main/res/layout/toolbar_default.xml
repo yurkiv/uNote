@@ -5,4 +5,8 @@
     android:layout_height="?attr/actionBarSize"
     android:background="?attr/colorPrimary"
     android:elevation="@dimen/toolbar_elevation"
+    app:contentInsetLeft="72dp"
+    app:contentInsetStart="72dp"
+    contentInsetLeft="72dp"
+    contentInsetStart="72dp"
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />

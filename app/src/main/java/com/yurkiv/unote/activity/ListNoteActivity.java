@@ -1,7 +1,6 @@
 package com.yurkiv.unote.activity;
 
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -13,11 +12,9 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.yurkiv.unote.R;
@@ -58,8 +55,6 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
     private List<Hashtag> hashtags;
     private List<Mention> mentions;
     private NotesAdapter notesAdapter;
-    private SearchView searchView;
-    private MenuItem searchMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,13 +215,13 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_note_list, menu);
-        SearchManager searchManager= (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchMenuItem=menu.findItem(R.id.search_note);
-        searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+        getMenuInflater().inflate(R.menu.menu_note_list, menu);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search_note));
+        SearchManager searchManager= (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(this);
+        searchView.setMaxWidth(10000);
         return true;
     }
 
@@ -260,8 +255,13 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
     }
 
     @Override
-    public boolean onQueryTextChange(String s) {
-//        notesAdapter.getFilter().filter(s);
+    public boolean onQueryTextChange(String query) {
+
+        final List<Note> filteredModelList = filter(notesData, query);
+        notesAdapter.setData(filteredModelList);
+        notesAdapter.notifyDataSetChanged();
+        rvNotes.scrollToPosition(0);
+
         return true;
     }
 
@@ -288,5 +288,17 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
         notesAdapter.setData(notesData);
         notesAdapter.notifyDataSetChanged();
         updateView();
+    }
+
+    private List<Note> filter(List<Note> notes, String query) {
+        query = query.toLowerCase();
+        final List<Note> filteredNoteList = new ArrayList<>();
+        for (Note note : notes) {
+            final String text = note.getTitle().toLowerCase()+note.getContent().toLowerCase();
+            if (text.contains(query)) {
+                filteredNoteList.add(note);
+            }
+        }
+        return filteredNoteList;
     }
 }

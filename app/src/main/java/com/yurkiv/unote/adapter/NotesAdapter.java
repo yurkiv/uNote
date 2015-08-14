@@ -1,21 +1,20 @@
 package com.yurkiv.unote.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.yurkiv.unote.R;
 import com.yurkiv.unote.model.Note;
 import com.yurkiv.unote.util.Utility;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +25,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     private static String TAG=NotesAdapter.class.getSimpleName();
 
     private static SimpleDateFormat dateFormat=new SimpleDateFormat("dd MMM");
-    private List<Note> noteList;
+    private ArrayList<Note> noteList;
     private Context context;
     private static OnItemClickListener onItemClickListener;
 
@@ -35,7 +34,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     }
 
     public void setData(List<Note> noteList){
-        this.noteList = noteList;
+        this.noteList = new ArrayList<>(noteList);
     }
 
     public static void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -55,9 +54,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         holder.titleRow.setText(Utility.styleText(note.getTitle()));
         holder.contentRow.setText(Utility.styleText(note.getContent()));
         holder.tvDate.setText(dateFormat.format(note.getUpdatedAt()));
-        holder.tvIcon.setText(note.getTitle().substring(0,1).toUpperCase());
-        GradientDrawable bgShape = (GradientDrawable)holder.llIcon.getBackground();
-        bgShape.setColor(note.getColor());
+
+        TextDrawable drawable = TextDrawable.builder()
+                .buildRound(note.getTitle().substring(0,1).toUpperCase(), note.getColor());
+        holder.ivNoteIcon.setImageDrawable(drawable);
     }
 
     @Override
@@ -70,16 +70,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         private TextView titleRow;
         private TextView contentRow;
         private TextView tvDate;
-        private TextView tvIcon;
-        private LinearLayout llIcon;
+        private ImageView ivNoteIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
             titleRow = (TextView) itemView.findViewById(R.id.tvTitle);
             contentRow = (TextView) itemView.findViewById(R.id.tvContent);
-            tvIcon = (TextView) itemView.findViewById(R.id.tvNoteIcon);
+            ivNoteIcon = (ImageView) itemView.findViewById(R.id.ivNoteIcon);
             tvDate = (TextView) itemView.findViewById(R.id.tvDateItem);
-            llIcon = (LinearLayout) itemView.findViewById(R.id.llNoteIcon);
             itemView.setOnClickListener(this);
         }
 

@@ -6,25 +6,9 @@
     <item android:id="@+id/search_note"
         android:icon="@drawable/ic_search"
         android:title="@string/search_note"
-        app:showAsAction="always"
-        app:actionViewClass="android.support.v7.widget.SearchView" />
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"/>
 
-    <item android:id="@+id/sort_note"
-        android:icon="@drawable/ic_sort"
-        android:title="@string/sort_note"
-        app:showAsAction="always" >
-        <!-- "sort" submenu -->
-        <menu>
-            <group android:checkableBehavior="single">
-            <item android:id="@+id/sort_by_title"
-                android:title="@string/sort_by_title" />
-            <item android:id="@+id/newest_first"
-                android:title="@string/newest_first" />
-            <item android:id="@+id/oldest_first"
-                android:title="@string/oldest_first" />
-            </group>
-        </menu>
-    </item>
     <!--<item android:id="@+id/settings"-->
         <!--android:title="@string/action_settings"-->
         <!--android:orderInCategory="100"-->

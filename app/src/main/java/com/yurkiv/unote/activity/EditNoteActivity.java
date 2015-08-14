@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.yurkiv.unote.R;
 import com.yurkiv.unote.colorpicker.ColorPickerDialog;
 import com.yurkiv.unote.colorpicker.ColorPickerSwatch;
@@ -47,7 +48,8 @@ public class EditNoteActivity extends AppCompatActivity implements RevealBackgro
     @InjectView(R.id.revealBackground) protected RevealBackgroundView vRevealBackground;
 
     private Note note;
-    private int selectedColor=Color.GRAY;
+    private static ColorGenerator generator = ColorGenerator.DEFAULT;
+    private int selectedColor=generator.getRandomColor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,12 +141,12 @@ public class EditNoteActivity extends AppCompatActivity implements RevealBackgro
                 R.string.color_picker_default_title,
                 com.yurkiv.unote.util.Utils.ColorUtils.colorChoice(this),
                 selectedColor,
-                5,
+                4,
                 com.yurkiv.unote.util.Utils.isTablet(this)? ColorPickerDialog.SIZE_LARGE : ColorPickerDialog.SIZE_SMALL);
         colorcalendar.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener(){
             @Override
             public void onColorSelected(int color) {
-                selectedColor =color;
+                selectedColor=color;
             }
         });
         colorcalendar.show(getFragmentManager(),"cal");
