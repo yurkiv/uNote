@@ -6,18 +6,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,36 +45,19 @@ public class ViewNoteActivity extends AppCompatActivity {
     private static DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
     private static DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
 
-    private int drawingStartLocation;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_note);
         ButterKnife.inject(this);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        drawingStartLocation = getIntent().getIntExtra(Constants.EXTRA_DRAWING_START_LOCATION, 0);
+        startIntroAnimation(getIntent().getIntExtra(Constants.EXTRA_DRAWING_START_LOCATION, 0));
+    }
 
-        updateNoteView();
-        startIntroAnimation();
-
-//        textTitle.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                editNote();
-//            }
-//        });
-//        textContent.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                editNote();
-//            }
-//        });
-  }
-
-    private void startIntroAnimation() {
+    private void startIntroAnimation(int drawingStartLocation) {
         int actionbarSize = Utils.getActionBarSize(this);
         toolbar.setTranslationY(-actionbarSize);
         int height = Utils.getScreenHeight(this);
@@ -101,9 +80,9 @@ public class ViewNoteActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestart() {
+    public void onResume() {
+        super.onResume();
         updateNoteView();
-        super.onRestart();
     }
 
     @Override
@@ -139,15 +118,15 @@ public class ViewNoteActivity extends AppCompatActivity {
             textTitle.setText(Utility.styleText(note.getTitle()));
             textContent.setText(Utility.styleText(note.getContent()));
             textUpdated.setText(dateFormat.format(note.getUpdatedAt())+", "+timeFormat.format(note.getUpdatedAt()));
-            Log.i(TAG, "onCreate: "+note.toString());
+            Log.i(TAG, "Note load from Realm: "+note.toString());
         }
     }
 
     private void editNote(){
         int[] startingLocation = new int[2];
         toolbar.getLocationOnScreen(startingLocation);
-        startingLocation[0] += toolbar.getWidth()-120;
-        startingLocation[1] += toolbar.getHeight()/2;
+        startingLocation[0] += toolbar.getWidth();
+        startingLocation[1] += 0;
 
         Intent intent=new Intent(ViewNoteActivity.this, EditNoteActivity.class);
         intent.putExtra(Constants.EXTRA_NOTE, note.getId());
@@ -162,6 +141,7 @@ public class ViewNoteActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         Realm realm = Realm.getInstance(getApplicationContext());
                         Note toEdit = realm.where(Note.class)
                                 .equalTo("id", getIntent().getStringExtra(Constants.EXTRA_NOTE)).findFirst();
@@ -170,6 +150,8 @@ public class ViewNoteActivity extends AppCompatActivity {
                         toEdit.getMentions().where().findAll().clear();
                         toEdit.removeFromRealm();
                         realm.commitTransaction();
+
+                        Log.d(TAG, "Note deleted: "+note.toString());
                         Toast.makeText(ViewNoteActivity.this, "The note has been deleted.", Toast.LENGTH_LONG).show();
                         finish();
                     }

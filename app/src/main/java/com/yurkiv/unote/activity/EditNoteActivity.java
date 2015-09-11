@@ -2,7 +2,6 @@ package com.yurkiv.unote.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -69,11 +68,11 @@ public class EditNoteActivity extends AppCompatActivity implements RevealBackgro
         Realm realm = Realm.getInstance(this);
         if (!getIntent().getStringExtra(Constants.EXTRA_NOTE).isEmpty()){
             String noteId=getIntent().getStringExtra(Constants.EXTRA_NOTE);
-            note=realm.where(Note.class).equalTo("id",noteId).findFirst();
+            note=realm.where(Note.class).equalTo("id", noteId).findFirst();
             editTitle.setText(note.getTitle());
             editContent.setText(note.getContent());
             selectedColor=note.getColor();
-            Log.i(TAG, "onCreate: " + note.toString());
+            Log.i(TAG, "Note load from Realm: " + note.toString());
         }
         setupRevealBackground(savedInstanceState);
     }
@@ -106,7 +105,6 @@ public class EditNoteActivity extends AppCompatActivity implements RevealBackgro
     }
 
     private void startIntroAnimation(){
-
         toolbar.animate().translationY(0).setStartDelay(300).setDuration(300).start();
         llEditNote.animate().translationY(0).setStartDelay(300).setDuration(600).start();
     }
@@ -134,22 +132,6 @@ public class EditNoteActivity extends AppCompatActivity implements RevealBackgro
                 return true;
             default: return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void setColor() {
-        ColorPickerDialog colorcalendar = ColorPickerDialog.newInstance(
-                R.string.color_picker_default_title,
-                com.yurkiv.unote.util.Utils.ColorUtils.colorChoice(this),
-                selectedColor,
-                4,
-                com.yurkiv.unote.util.Utils.isTablet(this)? ColorPickerDialog.SIZE_LARGE : ColorPickerDialog.SIZE_SMALL);
-        colorcalendar.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener(){
-            @Override
-            public void onColorSelected(int color) {
-                selectedColor=color;
-            }
-        });
-        colorcalendar.show(getFragmentManager(),"cal");
     }
 
     private void setNoteResult() {
@@ -182,31 +164,14 @@ public class EditNoteActivity extends AppCompatActivity implements RevealBackgro
         }
         realm.commitTransaction();
 
-        Log.i(TAG, "setNoteResult: " + note.toString());
+        Log.i(TAG, "Note has been saved to Realm: " + note.toString());
         Toast.makeText(EditNoteActivity.this, "The note has been saved.", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onBackPressed() {
         if (validateNoteForm()) {
-            AlertDialog.Builder builder=new AlertDialog.Builder(EditNoteActivity.this);
-            builder.setMessage("Do you want to save the note?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            setNoteResult();
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
-                    .setCancelable(true);
-            AlertDialog alertDialog=builder.create();
-            alertDialog.show();
+            showOnBackDialog();
         } else{
             finish();
         }
@@ -220,5 +185,42 @@ public class EditNoteActivity extends AppCompatActivity implements RevealBackgro
             editTitle.requestFocus();
             return false;
         } else return true;
+    }
+
+    private void setColor() {
+        ColorPickerDialog colorcalendar = ColorPickerDialog.newInstance(
+                R.string.color_picker_default_title,
+                com.yurkiv.unote.util.Utils.ColorUtils.colorChoice(this),
+                selectedColor,
+                4,
+                com.yurkiv.unote.util.Utils.isTablet(this) ? ColorPickerDialog.SIZE_LARGE : ColorPickerDialog.SIZE_SMALL);
+        colorcalendar.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener(){
+            @Override
+            public void onColorSelected(int color) {
+                selectedColor=color;
+            }
+        });
+        colorcalendar.show(getFragmentManager(),"cal");
+    }
+
+    private void showOnBackDialog() {
+        AlertDialog.Builder builder=new AlertDialog.Builder(EditNoteActivity.this);
+        builder.setMessage("Do you want to save the note?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setNoteResult();
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setCancelable(true);
+        AlertDialog alertDialog=builder.create();
+        alertDialog.show();
     }
 }

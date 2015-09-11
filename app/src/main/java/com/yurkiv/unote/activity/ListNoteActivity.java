@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.melnykov.fab.FloatingActionButton;
 import com.yurkiv.unote.R;
 import com.yurkiv.unote.adapter.NotesAdapter;
-import com.yurkiv.unote.adapter.NotesAdapterOld;
 import com.yurkiv.unote.callbacks.NavigationDrawerCallbacks;
 import com.yurkiv.unote.fragment.NavigationDrawerFragment;
 import com.yurkiv.unote.model.Hashtag;
@@ -39,6 +38,7 @@ import java.util.UUID;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.realm.Realm;
+import jonathanfinerty.once.Once;
 
 
 public class ListNoteActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, NavigationDrawerCallbacks {
@@ -69,99 +69,30 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
         navigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), toolbar);
 
         rvNotes.setHasFixedSize(true);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-        rvNotes.setLayoutManager(mLayoutManager);
+        rvNotes.setLayoutManager(new LinearLayoutManager(this));
         fab.attachToRecyclerView(rvNotes);
-//        firstRunInit();
+
+        String showAppTour="showAppTour";
+        if (!Once.beenDone(Once.THIS_APP_INSTALL, showAppTour)) {
+            firstRunInit();
+            Once.markDone(showAppTour);
+        }
+
         setupNotesAdapter();
+
         updateView();
+
         startIntroAnimation();
 
-        notesAdapter.setOnItemClickListener(new NotesAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                Note note=notesData.get(position);
-                int[] startingLocation = new int[2];
-                v.getLocationOnScreen(startingLocation);
+        setListeners();
 
-                Intent intent=new Intent(ListNoteActivity.this, ViewNoteActivity.class);
-                intent.putExtra(Constants.EXTRA_NOTE, note.getId());
-                intent.putExtra(Constants.EXTRA_DRAWING_START_LOCATION, startingLocation[1]);
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-            }
-        });
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int[] startingLocation = new int[2];
-                v.getLocationOnScreen(startingLocation);
-                startingLocation[0] += v.getWidth() / 2;
-
-                Intent intent=new Intent(ListNoteActivity.this, EditNoteActivity.class);
-                intent.putExtra(Constants.EXTRA_NOTE, "");
-                intent.putExtra(Constants.EXTRA_REVEAL_START_LOCATION, startingLocation);
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-            }
-        });
-
-    }
-
-    private void startIntroAnimation(){
-        int actionbarSize = Utils.getActionBarSize(this);
-        toolbar.setTranslationY(-actionbarSize);
-        int height = Utils.getScreenHeight(this);
-        rvNotes.setTranslationY(height);
-        fab.setTranslationY(height);
-
-        toolbar.animate().translationY(0).setStartDelay(300).setDuration(300).start();
-        rvNotes.animate().translationY(0).setStartDelay(300).setDuration(600).start();
-        fab.animate().translationY(0).setStartDelay(600).setDuration(600).start();
     }
 
     @Override
-    protected void onRestart() {
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "ON_RESUME");
         updateData();
-        super.onRestart();
-    }
-
-    private void firstRunInit(){
-        initSimpleNote("Inline #hashtag",
-                "Use #hashtag and @mentions anywhere in your #notes. " +
-                        "uNote automatically indexes and groups them together in the sidebar for quick access.");
-
-        initSimpleNote("#Search",
-                "In case you forgot to #hashtag or @mentions, we also have Full-Text search that " +
-                        "support all languages right from the start.");
-
-        initSimpleNote("#Sync with Drive",
-                "All your #notes, everywhere you go.");
-    }
-
-    private void initSimpleNote(String title, String content){
-        Realm realm = Realm.getInstance(this);
-        realm.beginTransaction();
-        Note note=realm.createObject(Note.class);
-        note.setId(UUID.randomUUID().toString());
-        note.setTitle(title);
-        note.setContent(content);
-        note.setUpdatedAt(new Date());
-        note.setColor(getResources().getColor(R.color.accent_light));
-        ArrayList<Hashtag> hashtags=Utility
-                .getHashtagsFromContent(note.getTitle() + " " + note.getContent());
-        ArrayList<Mention> mentions=Utility
-                .getMentionsFromContent(note.getTitle() + " " + note.getContent());
-        note.getHashtags().where().findAll().clear();
-        for (Hashtag hashtag:hashtags){
-            note.getHashtags().add(realm.copyToRealm(hashtag));
-        }
-        note.getMentions().where().findAll().clear();
-        for (Mention mention:mentions){
-            note.getMentions().add(realm.copyToRealm(mention));
-        }
-        realm.commitTransaction();
     }
 
     private void setupNotesAdapter(){
@@ -177,6 +108,64 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
         navigationDrawerFragment.updateNavigationDrawer(hashtags, mentions);
         Log.i(TAG, hashtags.toString());
         Log.i(TAG, mentions.toString());
+    }
+
+    private void setListeners() {
+        notesAdapter.setOnItemClickListener(new NotesAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                Note note = notesData.get(position);
+                int[] startingLocation = new int[2];
+                v.getLocationOnScreen(startingLocation);
+
+                Intent intent = new Intent(ListNoteActivity.this, ViewNoteActivity.class);
+                intent.putExtra(Constants.EXTRA_NOTE, note.getId());
+                intent.putExtra(Constants.EXTRA_DRAWING_START_LOCATION, startingLocation[1]);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int[] startingLocation = new int[2];
+                v.getLocationOnScreen(startingLocation);
+                startingLocation[0] += v.getWidth() / 2;
+
+                Intent intent = new Intent(ListNoteActivity.this, EditNoteActivity.class);
+                intent.putExtra(Constants.EXTRA_NOTE, "");
+                intent.putExtra(Constants.EXTRA_REVEAL_START_LOCATION, startingLocation);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            }
+        });
+    }
+
+    private void startIntroAnimation(){
+        int actionbarSize = Utils.getActionBarSize(this);
+        toolbar.setTranslationY(-actionbarSize);
+        int height = Utils.getScreenHeight(this);
+        rvNotes.setTranslationY(height);
+        fab.setTranslationY(height);
+
+        toolbar.animate().translationY(0).setStartDelay(300).setDuration(300).start();
+        rvNotes.animate().translationY(0).setStartDelay(300).setDuration(600).start();
+        fab.animate().translationY(0).setStartDelay(600).setDuration(600).start();
+    }
+
+
+    private void firstRunInit(){
+        initSimpleNote("Inline #hashtag",
+                "Use #hashtag and @mentions anywhere in your #notes. " +
+                        "uNote automatically indexes and groups them together in the sidebar for quick access.");
+
+        initSimpleNote("#Search",
+                "In case you forgot to #hashtag or @mentions, we also have Full-Text search that " +
+                        "support all languages right from the start.");
+
+        initSimpleNote("#Sync with Drive",
+                "All your #notes, everywhere you go.");
     }
 
     private void updateView(){
@@ -197,7 +186,6 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
         notesAdapter.setData(notesData);
         Log.i(TAG, notesData.toString());
         notesAdapter.notifyDataSetChanged();
-        //TODO: Only unique
         hashtags=realm.where(Hashtag.class).findAll();
         mentions=realm.where(Mention.class).findAll();
         Log.i(TAG, hashtags.toString());
@@ -228,15 +216,16 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.sort_by_title:
-                sortList(item, NotesAdapterOld.titleComparator);
+            case R.id.sync:
+                Intent intent = new Intent(ListNoteActivity.this, BackupRestoreActivity.class);
+                startActivity(intent);
                 return true;
-            case R.id.newest_first:
-                sortList(item, NotesAdapterOld.newestFirstComparator);
-                return true;
-            case R.id.oldest_first:
-                sortList(item, NotesAdapterOld.oldestFirstComparator);
-                return true;
+//            case R.id.newest_first:
+//                sortList(item, NotesAdapterOld.newestFirstComparator);
+//                return true;
+//            case R.id.oldest_first:
+//                sortList(item, NotesAdapterOld.oldestFirstComparator);
+//                return true;
             default: return super.onOptionsItemSelected(item);
         }
     }
@@ -247,22 +236,6 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
             navigationDrawerFragment.closeDrawer();
         else
             super.onBackPressed();
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String s) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String query) {
-
-        final List<Note> filteredModelList = filter(notesData, query);
-        notesAdapter.setData(filteredModelList);
-        notesAdapter.notifyDataSetChanged();
-        rvNotes.scrollToPosition(0);
-
-        return true;
     }
 
     @Override
@@ -290,6 +263,20 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
         updateView();
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        final List<Note> filteredModelList = filter(notesData, query);
+        notesAdapter.setData(filteredModelList);
+        notesAdapter.notifyDataSetChanged();
+        rvNotes.scrollToPosition(0);
+        return true;
+    }
+
     private List<Note> filter(List<Note> notes, String query) {
         query = query.toLowerCase();
         final List<Note> filteredNoteList = new ArrayList<>();
@@ -300,5 +287,29 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
             }
         }
         return filteredNoteList;
+    }
+
+    private void initSimpleNote(String title, String content){
+        Realm realm = Realm.getInstance(this);
+        realm.beginTransaction();
+        Note note=realm.createObject(Note.class);
+        note.setId(UUID.randomUUID().toString());
+        note.setTitle(title);
+        note.setContent(content);
+        note.setUpdatedAt(new Date());
+        note.setColor(getResources().getColor(R.color.accent_light));
+        ArrayList<Hashtag> hashtags=Utility
+                .getHashtagsFromContent(note.getTitle() + " " + note.getContent());
+        ArrayList<Mention> mentions=Utility
+                .getMentionsFromContent(note.getTitle() + " " + note.getContent());
+        note.getHashtags().where().findAll().clear();
+        for (Hashtag hashtag:hashtags){
+            note.getHashtags().add(realm.copyToRealm(hashtag));
+        }
+        note.getMentions().where().findAll().clear();
+        for (Mention mention:mentions){
+            note.getMentions().add(realm.copyToRealm(mention));
+        }
+        realm.commitTransaction();
     }
 }

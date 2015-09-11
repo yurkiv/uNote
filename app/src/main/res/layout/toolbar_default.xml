@@ -9,4 +9,5 @@
     app:contentInsetStart="72dp"
     contentInsetLeft="72dp"
     contentInsetStart="72dp"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
