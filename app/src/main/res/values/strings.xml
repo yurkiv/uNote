@@ -36,5 +36,12 @@
     <!-- Content description for a selected color square. -->
     <string name="color_swatch_description_selected">Color selected</string>
     <string name="color_note">Color Note</string>
+    <string name="sync">Sync with Drive</string>
+    <string name="title_activity_backup_restore">Backup/Restore</string>
+    <string name="backup_text">Backup will export all of your Notes into Google Drive.\nOlder Backups will be replaced by newer ones.</string>
+    <string name="create_backup">Create Backup</string>
+    <string name="restore_backup">Restore Backup</string>
+    <string name="restore_text">Restore your all notes from a previously crated backup.</string>
+    <string name="restore_checkbox_text">All Current Notes will be lost and replaced by backed up Notes.</string>
 
 </resources>

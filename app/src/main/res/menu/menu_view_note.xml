@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.yurkiv.unote.activity.ViewNoteActivity">
 
-    <item android:id="@+id/edit_note"
-        android:icon="@drawable/ic_edit"
-        android:title="@string/edit_note"
-        app:showAsAction="always" />
-
     <item android:id="@+id/share_note"
         android:icon="@drawable/ic_share"
         android:title="@string/share_note"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/edit_note"
+        android:icon="@drawable/ic_edit"
+        android:title="@string/edit_note"
         app:showAsAction="always" />
 
     <item android:id="@+id/delete_note"
