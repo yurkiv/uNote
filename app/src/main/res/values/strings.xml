@@ -43,5 +43,9 @@
     <string name="restore_backup">Restore Backup</string>
     <string name="restore_text">Restore your all notes from a previously crated backup.</string>
     <string name="restore_checkbox_text">All Current Notes will be lost and replaced by backed up Notes.</string>
+    <string name="dialog_save_text">Do you want to save the note?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="note_saved">The note has been saved.</string>
 
 </resources>

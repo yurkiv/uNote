@@ -165,7 +165,7 @@ public class EditNoteActivity extends AppCompatActivity implements RevealBackgro
         realm.commitTransaction();
 
         Log.i(TAG, "Note has been saved to Realm: " + note.toString());
-        Toast.makeText(EditNoteActivity.this, "The note has been saved.", Toast.LENGTH_LONG).show();
+        Toast.makeText(EditNoteActivity.this, R.string.note_saved, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -205,15 +205,15 @@ public class EditNoteActivity extends AppCompatActivity implements RevealBackgro
 
     private void showOnBackDialog() {
         AlertDialog.Builder builder=new AlertDialog.Builder(EditNoteActivity.this);
-        builder.setMessage("Do you want to save the note?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.dialog_save_text)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         setNoteResult();
                         finish();
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();

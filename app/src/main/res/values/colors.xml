@@ -15,11 +15,11 @@
 
     <color name="primary">#3F51B5</color>
     <color name="primary_dark">#303F9F</color>
+    <color name="primary_light">#C5CAE9</color>
     <color name="accent">#FF5722</color>
     <color name="accent_dark">#dd2c00</color>
     <color name="accent_light">#ff9e80</color>
 
-    <color name="primary_light">#C5CAE9</color>
     <color name="name">#FFFFFF</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
