@@ -2,6 +2,7 @@
 Android Notes App with Material Design
 
 The demo app is available on [appetize.io](https://appetize.io/embed/dyph20v16kjz17e256y9yu7j88?device=nexus5&orientation=portrait&scale=75)
+
 Open Source on Github - https://github.com/yurkiv/uNote
 
 Features
@@ -16,8 +17,8 @@ Features
 Screenshots
 -------
 
-<img src="https://raw.githubusercontent.com/yurkiv/uNote/master/screenshots/screener_20150913(113841).png" width="300">
-<img src="https://raw.githubusercontent.com/yurkiv/uNote/master/screenshots/screener_20150913(113122).png" width="300">
+<img src="https://raw.githubusercontent.com/yurkiv/uNote/master/screenshots/screener_20150913(113841).png" width="320">
+<img src="https://raw.githubusercontent.com/yurkiv/uNote/master/screenshots/screener_20150913(113122).png" width="320">
 
 <img src="https://raw.githubusercontent.com/yurkiv/uNote/master/screenshots/screener_20150913(113225).png" width="300">
 <img src="https://raw.githubusercontent.com/yurkiv/uNote/master/screenshots/screener_20150913(113252).png" width="300">
