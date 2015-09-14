@@ -1,3 +1,5 @@
+/app/build
+/.gradle
 /.idea
 /keys.jks
 .gradle
