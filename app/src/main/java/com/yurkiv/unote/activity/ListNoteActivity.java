@@ -3,6 +3,7 @@ package com.yurkiv.unote.activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.melnykov.fab.FloatingActionButton;
 import com.yurkiv.unote.R;
 import com.yurkiv.unote.adapter.NotesAdapter;
 import com.yurkiv.unote.callbacks.NavigationDrawerCallbacks;
@@ -70,7 +70,6 @@ public class ListNoteActivity extends AppCompatActivity implements SearchView.On
 
         rvNotes.setHasFixedSize(true);
         rvNotes.setLayoutManager(new LinearLayoutManager(this));
-        fab.attachToRecyclerView(rvNotes);
 
         String showAppTour="showAppTour";
         if (!Once.beenDone(Once.THIS_APP_INSTALL, showAppTour)) {
