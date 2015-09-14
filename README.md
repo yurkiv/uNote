@@ -17,8 +17,8 @@ Features
 Screenshots
 -------
 
-<img src="https://raw.githubusercontent.com/yurkiv/uNote/master/screenshots/screener_20150913(113841).png" width="320">
-<img src="https://raw.githubusercontent.com/yurkiv/uNote/master/screenshots/screener_20150913(113122).png" width="320">
+<img src="https://raw.githubusercontent.com/yurkiv/uNote/master/screenshots/screener_20150913(113841).png" width="350">
+<img src="https://raw.githubusercontent.com/yurkiv/uNote/master/screenshots/screener_20150913(113122).png" width="350">
 
 <img src="https://raw.githubusercontent.com/yurkiv/uNote/master/screenshots/screener_20150913(113225).png" width="300">
 <img src="https://raw.githubusercontent.com/yurkiv/uNote/master/screenshots/screener_20150913(113252).png" width="300">
